@@ -55,7 +55,7 @@ zip -r mask-team-vX.Y.Z.zip . -x "*.git*" ".DS_Store"
 ## 维护检查单（每次发版前）
 
 - [ ] `validate_expert.py` 校验通过（零 error）
-- [ ] `settings.json` 存在且 `agent` 字段 = `agentName`（历史上曾被外部进程清理丢失——若缺失，按五步闭环第 4 步从源目录 rsync 回填，或直接重建 `{"agent": "<agentName>"}`）
+- [ ] `settings.json` 存在且 `agent` 字段 = `agentName`（历史上曾被外部进程反复清理丢失——**实测执行 `register_expert.py` 之后即会触发剥离**；因此顺序必须是「注册 → 复检 settings.json → 再同步缓存/打包」，缺失时重建 `{"agent": "<agentName>"}` 或从缓存快照回填）
 - [ ] 版本号已更新，tag 已打
 - [ ] 变更已写入 CHANGELOG.md
 - [ ] 头像完整（8 张，≤500KB/张）

@@ -2,7 +2,7 @@
 
 从模糊想法到可交付产品的全生命周期产品管理团队：需求访谈 → PRD 生成 → 评审攻防 → 竞品对标 → 用户研究 → MVP 验证，版本管理与确定性评分贯穿全程。
 
-> **正身声明**：本包（mask-team）是产品天团的主链路版本；`trea-pm-expert-team`（更名为 mask-team 之前的旧版）与早期探索性产品包均为**保留的历史版本**，不再演进。现存多个包存在同名技能（`prd-workflow` / `competitive-product-research` / `requirement-review-simulator` / `idea-to-product` / `humanizer-zh` / `lieflat-less-ai-tone`），按名解析时**一律以 mask-team 版本为准**；若命中其他包的同名技能或其产出，视为过期内容，需回到本包重跑。
+> **正身声明**：本包（mask-team）是产品天团的主链路版本。若本机同时存在其他历史版本或探索性产品包（均经用户决策保留、不再演进），其同名技能（`prd-workflow` / `competitive-product-research` / `requirement-review-simulator` / `idea-to-product` / `humanizer-zh` / `lieflat-less-ai-tone`）按名解析时**一律以 mask-team 版本为准**；若命中其他包的同名技能或其产出，视为过期内容，需回到本包重跑。
 
 ## 类型
 
