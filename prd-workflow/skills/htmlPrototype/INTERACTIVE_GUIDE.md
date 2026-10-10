@@ -17,7 +17,7 @@
 ### 方式 2：命令行
 
 ```bash
-cd skills/prd-workflow/skills/htmlPrototype
+cd prd-workflow/skills/htmlPrototype
 python3 main.py "创建一个产品列表页" --interactive
 ```
 

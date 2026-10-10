@@ -16,7 +16,7 @@ description: "PRD/requirement document reviewer with plugin architecture. Suppor
 
 ```bash
 # 路径基准：prd-workflow 技能根
-cd skills/prd-workflow/skills/requirement-reviewer/engines
+cd prd-workflow/skills/requirement-reviewer/engines
 python3 review_cli.py <prd 路径>
 ```
 
@@ -36,7 +36,7 @@ pip3 install -r requirements.txt
 
 ```bash
 # 方式1：使用环境检测工具
-cd skills/prd-workflow/skills/requirement-reviewer/engines
+cd prd-workflow/skills/requirement-reviewer/engines
 python3 check_environment.py
 
 # 方式2：运行测试

@@ -237,7 +237,7 @@ prd-export/
 ### 测试 1：基础导出
 
 ```bash
-cd skills/prd-workflow/skills/prd-export
+cd prd-workflow/skills/prd-export
 python3 engines/export_engine.py test.md -o test.docx
 ```
 

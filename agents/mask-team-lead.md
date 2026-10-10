@@ -195,7 +195,7 @@ skills: [humanizer-zh, lieflat-less-ai-tone]
 建议下一阶段输入：<需要什么、以什么形式>
 ```
 
-**产物登记（manifest 机制）**：成员回传后、转交下一阶段前，你须对该产物执行登记——`python3 <插件>/skills/prd-workflow/scripts/manifest_cli.py register <产物路径> --phase N --producer <成员Agent ID> --inputs <上游路径,逗号分隔>`（目录型产物按文件自动展开登记；任务启动时先跑一次 `init`）。该台账记录每个产物的输入哈希快照，是 Phase 4 修订后失效裁决与 Phase 6 汇编前断言的依据。本机制仅在团队编排（TeamCreate 后）启用；单点直调无并行下游，不使用。登记后产物内容若被再修改，须重新 register 或 refresh，否则下游会被误判 stale。
+**产物登记（manifest 机制）**：成员回传后、转交下一阶段前，你须对该产物执行登记——`python3 <插件>/prd-workflow/scripts/manifest_cli.py register <产物路径> --phase N --producer <成员Agent ID> --inputs <上游路径,逗号分隔>`（目录型产物按文件自动展开登记；任务启动时先跑一次 `init`）。该台账记录每个产物的输入哈希快照，是 Phase 4 修订后失效裁决与 Phase 6 汇编前断言的依据。本机制仅在团队编排（TeamCreate 后）启用；单点直调无并行下游，不使用。登记后产物内容若被再修改，须重新 register 或 refresh，否则下游会被误判 stale。
 
 ## 自我进化协议（self-evolution）
 

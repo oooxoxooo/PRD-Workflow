@@ -2,6 +2,16 @@
 
 本文件记录MASK产品天团（mask-team）的版本演进。格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
 
+## [2.4.0] - 2026-10-10
+
+### Changed
+- **目录架构：prd-workflow 提升至包根**（`skills/prd-workflow/` → `prd-workflow/`，与 `agents/`、`skills/` 平级）。理由：该技能实为"方法论主链路 + 全包 Python 工具供给方 + 设计技能宿主"三重身份，并非普通能力技能；同时消除 `skills/prd-workflow/skills/` 三级嵌套。官方 `plugin-json-spec.md` 的 skills 示例即根级技能（`["./my-skill"]`），validate_expert.py 对 skills 仅校验"声明路径下存在 SKILL.md"，无目录位置强制——兼容性经官方校验器实测通过
+- **联动修改（21 处 `skills/prd-workflow` 路径引用，非 legacy/CHANGELOG 全部归零，rg + 正样本控制验收）**：plugin.json skills 路径（`./prd-workflow`）；agents/mask-team-lead.md manifest_cli 调用路径；agents/product-designer.md 嵌套技能路径基准；README（技能清单标题、安装目录树、提示词安装检查项、运行依赖路径）；RELEASE（耦合检查范围扩为 `skills prd-workflow` 双目录、正样本基线路径、manifest 冒烟命令）；prd-workflow 内嵌套文档 14 处（htmlPrototype×8 / requirement-reviewer×2 / mermaid-flow C4_TEST×2 / prd-export×1 / ui-ux-pro-max×1 路径基准声明）
+- **不改**：CHANGELOG 历史条目与 `legacy/` 上游归档中的旧路径属历史记录，按原样保留；prd-workflow 内部相对路径（SKILL.md §8 工具矩阵以技能根为基准）不受影响
+
+### Migration
+- 运行缓存快照 `cache/my-experts/mask-team/2.4.0/` 已按新布局同步，`installed_plugins.json` 指向 2.4.0；旧版本快照（≤2.3.0）保留旧布局不动
+
 ## [2.3.0] - 2026-10-10
 
 ### Added

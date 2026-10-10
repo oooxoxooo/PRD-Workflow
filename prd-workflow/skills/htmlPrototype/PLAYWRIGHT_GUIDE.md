@@ -13,7 +13,7 @@
 ### 方式 1：使用 htmlPrototype 技能（推荐）
 
 ```bash
-cd skills/prd-workflow/skills/htmlPrototype
+cd prd-workflow/skills/htmlPrototype
 
 # 从需求文档生成
 python3 main.py --doc requirements.md
@@ -31,12 +31,12 @@ python3 main.py "创建一个产品列表页" -i
 
 ```bash
 # 截图 HTML 文件
-python3 skills/prd-workflow/skills/htmlPrototype/screenshot/capture.py \
+python3 prd-workflow/skills/htmlPrototype/screenshot/capture.py \
     prototype.html \
     --output output.png
 
 # 自定义尺寸
-python3 skills/prd-workflow/skills/htmlPrototype/screenshot/capture.py \
+python3 prd-workflow/skills/htmlPrototype/screenshot/capture.py \
     prototype.html \
     --output output.png \
     --width 1920 \
@@ -283,7 +283,7 @@ with sync_playwright() as p:
 ### 截图函数
 
 ```python
-# skills/prd-workflow/skills/htmlPrototype/screenshot/capture.py
+# prd-workflow/skills/htmlPrototype/screenshot/capture.py
 
 from playwright.sync_api import sync_playwright
 

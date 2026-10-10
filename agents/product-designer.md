@@ -111,7 +111,7 @@ taste-skill §11（audit-first 重设计协议：先审计、保留品牌资产�
 5. **原型生成**：单次读取完整上下文生成 HTML 原型系统，输出可运行 HTML 文件
 6. **一致性验证**：CSS tokens 引用检查、多页面导航/面包屑/按钮样式一致性、（按组合）L4 规范审计
 
-加载技能时按路由表精准加载：`prd-workflow`（含 ui-ux-pro-max 子技能）为主链路；`frontend-design`、`taste-skill`、`web-design-guidelines` 位于 `skills/prd-workflow/skills/` 下，按需读取。
+加载技能时按路由表精准加载：`prd-workflow`（含 ui-ux-pro-max 子技能）为主链路；`frontend-design`、`taste-skill`、`web-design-guidelines` 位于 `prd-workflow/skills/` 下，按需读取。
 
 ## 输出规范
 

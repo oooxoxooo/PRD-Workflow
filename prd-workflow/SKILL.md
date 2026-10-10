@@ -3,7 +3,7 @@ name: prd-workflow
 description: Complete PRD workflow executed by the LLM reading this document as the pipeline. Deep interview → Requirement decomposition → PRD generation → Review → Flowchart → Quality gates → Word export. Deterministic steps call Python tools directly.
 ---
 
-# PRD Workflow（WorkBuddy 原生化版 v2.2.0）
+# PRD Workflow（WorkBuddy 原生化版 v2.4.0）
 
 > **执行模型**：本文档即管线。没有可运行的 JS 工作流——LLM（你）按本文档逐步执行；确定性步骤用 Bash 调用 Python 工具（见第 8 节）。**禁止尝试运行 `legacy/` 下的任何 JS**（它们依赖上游宿主环境，在本环境不可用，仅作历史归档，详见 legacy/LEGACY-NOTE.md）。
 > **溯源**：上游 v5.1.0（gotomanutd + 红曼为帆，MIT-0）。2.1.0 宿主原生化改造：JS 管线归档，方法论全量萃取至本文档。
@@ -171,7 +171,8 @@ Mermaid 渲染主备切换（mmdc → Kroki → 子进程备援 + 熔断器）�
 
 ## 10. 版本与溯源
 
-- 本版：v2.3.0（2026-10-10，mask-team 2.3.0）——新增产物依赖与失效台账机制（`scripts/manifest_cli.py`，§8）；Mermaid 渲染默认值反转：本地渲染为默认，Kroki 出网需用户显式同意，敏感特征规则降级为额外防线（§8）
+- 本版：v2.4.0（2026-10-10，mask-team 2.4.0）——技能目录提升至包根（`skills/prd-workflow/` → `prd-workflow/`），与 agents/、skills/ 平级；本文档内相对路径不受影响，包级引用已联动归零
+- 上一版：v2.3.0（2026-10-10，mask-team 2.3.0）——新增产物依赖与失效台账机制（`scripts/manifest_cli.py`，§8）；Mermaid 渲染默认值反转：本地渲染为默认，Kroki 出网需用户显式同意，敏感特征规则降级为额外防线（§8）
 - 上一版：v2.2.0（2026-10-10，mask-team 2.2.0 收口）——访谈问题数口径收敛为单一事实来源（16-33，§2）、Kroki 出网判定规则可执行化（§8）、工具矩阵同步归档后实际脚本
 - 上一版：v2.1.0（2026-10-10，宿主原生化改造）——JS workflows 归档至 `legacy/`，方法论萃取至本文档；执行模型从"JS 管线自动执行"切换为"LLM 读文档执行 + Bash 调脚本"
 - 上游：v5.1.0（2026-04-20，gotomanutd + 红曼为帆，MIT-0）——Wiki 增强 / AI 驱动原型 / 设计系统持久化三大特性中的 Wiki 增强依赖上游宿主知识库（详见 legacy/LEGACY-NOTE.md），本环境不可用；其余能力经原生化改造后保留

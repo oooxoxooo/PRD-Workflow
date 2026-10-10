@@ -189,7 +189,7 @@ done
 ### 方式 1：CLI 截图
 
 ```bash
-cd skills/prd-workflow/skills/htmlPrototype
+cd prd-workflow/skills/htmlPrototype
 
 # 生成 HTML
 python3 main.py "创建一个产品列表页"
@@ -205,7 +205,7 @@ playwright screenshot \
 ### 方式 2：Python API（当前使用）
 
 ```python
-# skills/prd-workflow/skills/htmlPrototype/screenshot/capture.py
+# prd-workflow/skills/htmlPrototype/screenshot/capture.py
 
 from playwright.sync_api import sync_playwright
 

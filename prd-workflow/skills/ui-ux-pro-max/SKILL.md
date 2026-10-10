@@ -2,7 +2,7 @@
 name: ui-ux-pro-max
 description: "UI/UX design intelligence for web, mobile, and desktop. This skill should be used when designing, building, reviewing, or fixing interfaces, including pages, components, design systems, accessibility, interaction, responsive layout, typography, color, charts, and stack-specific UI implementation. Searchable local data: 79 searchable styles (50 active), 192 product palettes and reasoning profiles, 74 font pairings, 119 UX guidelines, 105 icons, 17 GSAP presets, 25 chart types, and 22 stacks."
 ---
-> **路径基准（WorkBuddy 宿主）**：本文件位于 `skills/prd-workflow/skills/ui-ux-pro-max/`。下文所有 `scripts/xxx.py` 均**以本技能目录为基准**调用；禁止沿用上游宿主的技能根变量或宿主专属安装路径——本技能只认可包内相对路径。
+> **路径基准（WorkBuddy 宿主）**：本文件位于 `prd-workflow/skills/ui-ux-pro-max/`。下文所有 `scripts/xxx.py` 均**以本技能目录为基准**调用；禁止沿用上游宿主的技能根变量或宿主专属安装路径——本技能只认可包内相对路径。
 
 
 # UI/UX Pro Max - Design Intelligence

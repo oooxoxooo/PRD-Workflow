@@ -1,6 +1,6 @@
 {
   "name": "mask-team",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Senior product expert team (mask-team) covering requirement analysis, PRD generation, review simulation, competitive strategy, user research, and MVP validation.",
   "author": {
     "name": "Ken",
@@ -16,7 +16,7 @@
     "./agents/user-researcher.md"
   ],
   "skills": [
-    "./skills/prd-workflow",
+    "./prd-workflow",
     "./skills/competitive-product-research",
     "./skills/requirement-review-simulator",
     "./skills/idea-to-product",

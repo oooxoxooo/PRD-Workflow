@@ -107,14 +107,14 @@ python mermaid_render.py -i c4_component.mmd -o c4_component.png -w 1600 -b whit
 
 ## 📊 文件清单
 
-**位置**: `skills/prd-workflow/skills/mermaid-flow/scripts/`
+**位置**: `prd-workflow/skills/mermaid-flow/scripts/`
 
 | 文件 | 用途 | 大小 |
 |------|------|------|
 | c4_generator.py | C4 图生成器 | 5KB |
 | mermaid_render.py | Mermaid 渲染器 | 8KB |
 
-**位置**: 上游 `flowchart-draw` 子技能（本包未随附；对应能力见 `skills/prd-workflow/skills/mermaid-flow/scripts/`）
+**位置**: 上游 `flowchart-draw` 子技能（本包未随附；对应能力见 `prd-workflow/skills/mermaid-flow/scripts/`）
 
 | 文件 | 用途 | 大小 |
 |------|------|------|

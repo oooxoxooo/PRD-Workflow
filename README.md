@@ -14,7 +14,7 @@ Team 型（多角色协作团队，主理人编排）
 |----------|------|------|---------|
 | mask-team-lead | Elon Mask | 首席产品官（主理人）：编排调度、汇编终稿、终稿润色 | humanizer-zh / lieflat-less-ai-tone |
 | requirement-analyst | 柯明澈 | 需求分析专家：6 维深度访谈、需求拆解、PRD 生成与迭代 | prd-workflow |
-| product-designer | 颜如玉 | 产品设计专家：Mermaid 流程图、设计系统、HTML 原型；编排四层设计技能栈（L1 frontend-design 审美方向 / L2 ui-ux-pro-max 产品UI智能 / L3 taste-skill 营销页品味 / L4 web-design-guidelines 规范审计，见 `skills/prd-workflow/skills/DESIGN-SKILL-ORCHESTRATION.md`） | prd-workflow（ui-ux-pro-max / mermaid-flow / htmlPrototype + 3 设计技能） |
+| product-designer | 颜如玉 | 产品设计专家：Mermaid 流程图、设计系统、HTML 原型；编排四层设计技能栈（L1 frontend-design 审美方向 / L2 ui-ux-pro-max 产品UI智能 / L3 taste-skill 营销页品味 / L4 web-design-guidelines 规范审计，见 `prd-workflow/skills/DESIGN-SKILL-ORCHESTRATION.md`） | prd-workflow（ui-ux-pro-max / mermaid-flow / htmlPrototype + 3 设计技能） |
 | product-strategist | 路向明 | 产品策略专家：8 维竞品对标、SWOT/五力/PESTLE、RICE 路线图 | competitive-product-research |
 | review-challenger | 聂知微 | 评审攻防专家：五角色推演、25 子项确定性评分、会议资产 | requirement-review-simulator |
 | growth-validator | 季小步 | 增长验证专家：MVP 收敛、缺口卡、Playwright 检查、30/60/90 度量 | idea-to-product |
@@ -33,7 +33,7 @@ Phase 6 最终汇编      主理人（润色 + 不做清单 + 交付）
 
 预设 Workflow：WF-1 完整产品规划 / WF-2 竞品对标决策 / WF-3 评审冲刺 / WF-4 MVP 快速验证。
 
-## 自包含技能清单（skills/）
+## 自包含技能清单（prd-workflow 位于包根，其余 6 个位于 skills/）
 
 | 技能 | 来源版本 | 用途 |
 |------|---------|------|
@@ -75,7 +75,8 @@ Phase 6 最终汇编      主理人（润色 + 不做清单 + 交付）
 ├── .codebuddy-plugin/plugin.json     # 专家包元数据（必需）
 ├── settings.json                     # {"agent": "mask-team-lead"}（Team 型必需）
 ├── agents/                           # 7 个 agent 定义
-├── skills/                           # 7 个技能
+├── prd-workflow/                     # PRD 主链路工作流（含 9 个嵌套子技能）
+├── skills/                           # 6 个技能
 ├── avatars/                          # 8 张头像
 └── README.md / CHANGELOG.md / RELEASE.md
 ```
@@ -92,7 +93,7 @@ Phase 6 最终汇编      主理人（润色 + 不做清单 + 交付）
 【步骤（逐步执行，每步回报一句）】
 1. 专家目录取 "${WORKBUDDY_CONFIG_DIR:-$HOME/.workbuddy}/plugins/marketplaces/my-experts/plugins"，不要装到其他目录。
 2. 若该目录下已有 mask-team/，先改名备份为 mask-team.bak-<时间戳>，最后告知备份路径。
-3. 解压 zip 到专家目录，确认形成 <专家目录>/mask-team/，且含 .codebuddy-plugin/plugin.json、settings.json、agents/、skills/、avatars/。
+3. 解压 zip 到专家目录，确认形成 <专家目录>/mask-team/，且含 .codebuddy-plugin/plugin.json、settings.json、agents/、prd-workflow/、skills/、avatars/。
 4. 用 expert-manager 的 validate_expert.py 校验。若报 "Team type must have settings.json"，
    说明 settings.json 曾被外部进程清理——重建为 {"agent": "mask-team-lead"} 后重新校验，并注明做过该修复。
 5. 校验通过后用 register_expert.py 注册。
@@ -117,7 +118,7 @@ python3 <expert-manager>/scripts/register_expert.py "$PLUGINS/mask-team"
 
 > **安装后自检**：validate 应输出 `✅ Expert package is valid!`；register 应输出 `🎉 Expert 'mask-team' is now registered and visible in WorkBuddy!`。若报 `Team type must have settings.json`，重建 `settings.json` 内容 `{"agent": "mask-team-lead"}`（该文件被外部进程清理是本包已知复发问题）。
 > **看到它**：WorkBuddy 左侧栏「专家」→ 专家中心 → 我的专家 → **MASK产品天团**。
-> **运行依赖**：无系统级依赖。仅 `skills/prd-workflow/skills/prd-export/engines/export_engine.py`（PRD 导出 docx/PDF）需 `python-docx` + `pillow`，可用解释器见 `skills/prd-workflow/SKILL.md` §8。
+> **运行依赖**：无系统级依赖。仅 `prd-workflow/skills/prd-export/engines/export_engine.py`（PRD 导出 docx/PDF）需 `python-docx` + `pillow`，可用解释器见 `prd-workflow/SKILL.md` §8。
 
 ## 打包分享
 
