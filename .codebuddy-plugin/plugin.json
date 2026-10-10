@@ -1,0 +1,180 @@
+{
+  "name": "mask-team",
+  "version": "2.2.5",
+  "description": "Senior product expert team (mask-team) covering requirement analysis, PRD generation, review simulation, competitive strategy, user research, and MVP validation.",
+  "author": {
+    "name": "Ken",
+    "email": "ken@transfereasy.com"
+  },
+  "agents": [
+    "./agents/mask-team-lead.md",
+    "./agents/requirement-analyst.md",
+    "./agents/product-designer.md",
+    "./agents/product-strategist.md",
+    "./agents/review-challenger.md",
+    "./agents/growth-validator.md",
+    "./agents/user-researcher.md"
+  ],
+  "skills": [
+    "./skills/prd-workflow",
+    "./skills/competitive-product-research",
+    "./skills/requirement-review-simulator",
+    "./skills/idea-to-product",
+    "./skills/humanizer-zh",
+    "./skills/lieflat-less-ai-tone",
+    "./skills/self-evolution"
+  ],
+  "expertType": "team",
+  "agentName": "mask-team-lead",
+  "teamInfo": {
+    "leadAgent": "mask-team-lead",
+    "memberAgents": [
+      "requirement-analyst",
+      "product-designer",
+      "product-strategist",
+      "review-challenger",
+      "growth-validator",
+      "user-researcher"
+    ]
+  },
+  "displayName": {
+    "en": "MASK PM Expert Team",
+    "zh": "MASK产品天团"
+  },
+  "profession": {
+    "en": "MASK PM Expert Team",
+    "zh": "MASK产品天团"
+  },
+  "displayDescription": {
+    "en": "Full-lifecycle product team: requirement interviews, PRD generation, review simulation, competitive benchmarking, user research, and MVP validation.",
+    "zh": "覆盖需求访谈、PRD生成、评审攻防、竞品对标、用户研究与MVP验证，产品全生命周期协作交付"
+  },
+  "avatar": "avatars/team.png",
+  "categoryId": "01-ProductDesign",
+  "defaultInitPrompt": {
+    "zh": "我有一个产品想法，帮我从需求访谈开始走完整的产品规划流程",
+    "en": "I have a product idea. Start with requirement interviews and run the full product planning workflow."
+  },
+  "plugin": "mask-team",
+  "tags": [
+    {
+      "en": "Product Planning",
+      "zh": "产品规划"
+    },
+    {
+      "en": "PRD Writing",
+      "zh": "PRD撰写"
+    },
+    {
+      "en": "Requirement Analysis",
+      "zh": "需求分析"
+    }
+  ],
+  "quickPrompts": [
+    {
+      "en": "I have a product idea. Start with requirement interviews and run the full product planning workflow.",
+      "zh": "我有一个产品想法，帮我从需求访谈开始走完整的产品规划流程"
+    },
+    {
+      "en": "Benchmark us against competitor X and Y, with gap analysis and prioritized actions.",
+      "zh": "帮我对标XX和YY竞品，出一份差距分析和落地建议"
+    },
+    {
+      "en": "Simulate the review meeting for this PRD with five roles challenging it.",
+      "zh": "帮我预演这个PRD的评审会，五角色攻防打分"
+    }
+  ],
+  "members": [
+    {
+      "id": "mask-team-lead",
+      "displayName": {
+        "en": "Elon Mask",
+        "zh": "Elon Mask"
+      },
+      "profession": {
+        "en": "Chief Product Officer",
+        "zh": "首席产品官"
+      },
+      "avatar": "avatars/mask-team-lead.png",
+      "role": "lead"
+    },
+    {
+      "id": "requirement-analyst",
+      "displayName": {
+        "en": "Ke Mingche",
+        "zh": "柯明澈"
+      },
+      "profession": {
+        "en": "Requirement Analyst",
+        "zh": "需求分析专家"
+      },
+      "avatar": "avatars/requirement-analyst.png",
+      "role": "member"
+    },
+    {
+      "id": "product-designer",
+      "displayName": {
+        "en": "Yan Ruyu",
+        "zh": "颜如玉"
+      },
+      "profession": {
+        "en": "Product Designer",
+        "zh": "产品设计专家"
+      },
+      "avatar": "avatars/product-designer.png",
+      "role": "member"
+    },
+    {
+      "id": "product-strategist",
+      "displayName": {
+        "en": "Lu Xiangming",
+        "zh": "路向明"
+      },
+      "profession": {
+        "en": "Product Strategist",
+        "zh": "产品策略专家"
+      },
+      "avatar": "avatars/product-strategist.png",
+      "role": "member"
+    },
+    {
+      "id": "review-challenger",
+      "displayName": {
+        "en": "Nie Zhiwei",
+        "zh": "聂知微"
+      },
+      "profession": {
+        "en": "Review Challenger",
+        "zh": "评审攻防专家"
+      },
+      "avatar": "avatars/review-challenger.png",
+      "role": "member"
+    },
+    {
+      "id": "growth-validator",
+      "displayName": {
+        "en": "Ji Xiaobu",
+        "zh": "季小步"
+      },
+      "profession": {
+        "en": "Growth Validator",
+        "zh": "增长验证专家"
+      },
+      "avatar": "avatars/growth-validator.png",
+      "role": "member"
+    },
+    {
+      "id": "user-researcher",
+      "displayName": {
+        "en": "Wen Zhongsheng",
+        "zh": "闻众声"
+      },
+      "profession": {
+        "en": "User Researcher",
+        "zh": "用户研究专家"
+      },
+      "avatar": "avatars/user-researcher.png",
+      "role": "member"
+    }
+  ]
+}
