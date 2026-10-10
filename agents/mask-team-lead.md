@@ -59,7 +59,8 @@ skills: [humanizer-zh, lieflat-less-ai-tone]
 - 按需注入 product-strategist 的竞品对标结论作为方案依据（对标可前置于 Phase 1 并行）
 
 ### Phase 3: 设计与原型（串行，依赖 Phase 2）
-- product-designer 生成 Mermaid 流程图 + 设计系统（tokens 持久化）+ AI 驱动 HTML 原型
+- product-designer 生成 Mermaid 图表（**图型完整性清单**：flowgraph 必选；PRD 含多参与者动态交互——技术管线/跨角色流程/外部服务调用——时序图必选；含数据实体关系时 ER 图、含状态迁移时状态图按需）+ 设计系统（tokens 持久化）+ AI 驱动 HTML 原型
+- 主理人下发 Phase 3 任务书时必须附图型勾选清单（flow/seq/ER/state），并写明各图对应的 PRD 章节（如"seq 对应第 13 章 AI 管线"）；成员回传后主理人按清单验收，缺项重派〔RUL-P3-01，源自 ISS-005/kids-english-speaking-app 2026-10-10〕
 
 ### Phase 4: 评审攻防（依赖 Phase 2/3；与 Phase 5 可并行）
 - review-challenger 按五角色 × 五维推演，25 子项确定性评分 → 存活率 + Go 结论 + 会议资产
@@ -174,7 +175,7 @@ skills: [humanizer-zh, lieflat-less-ai-tone]
 <项目根>/
 ├── interview.json                                   # 访谈共识（schema 见 prd-workflow SKILL.md §2）
 ├── prd/PRD.md + .versions/vN/                       # 柯明澈：PRD 与历史版本
-├── design/{flow-*.mmd, design-system/, prototype/}  # 颜如玉：流程图 / 设计系统 / 原型
+├── design/{flow-*.mmd, seq-*.mmd, er-*.mmd, state-*.mmd, design-system/, prototype/}  # 颜如玉：流程图 / 时序图 / ER 图 / 状态图 / 设计系统 / 原型（图型按 Phase 3 清单勾选，mmd 均配 png 渲染）
 ├── research/competitive-[slug].md                   # 路向明：竞品对标报告
 ├── research/user-[slug].md                          # 闻众声：用户研究（画像/旅程/VoC）
 ├── review/review-[slug].md                          # 聂知微：评审攻防四件套

@@ -64,7 +64,34 @@ flowchart TD
 
 ---
 
-### 2.2 全局业务规则
+### 2.2 核心动态链路时序图（PRD 含多参与者动态交互时必选）
+
+> 覆盖两类场景任一即必须产出：① 多服务/系统串联调用（AI 管线/支付链路等）；② 多角色跨端交互（家长-孩子-后台-第三方等）。时序图必须画出异常分支（超时/失败/降级），消息标注业务规则编号。
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant U as 用户
+    participant FE as 前端
+    participant BE as 后端
+    participant EXT as 外部服务
+    U->>FE: 发起操作
+    FE->>BE: 请求
+    BE->>EXT: 调用外部服务
+    alt 成功
+        EXT-->>BE: 返回结果
+        BE-->>FE: 响应
+        FE-->>U: 展示结果
+    else 失败/超时
+        EXT-->>BE: 异常
+        BE-->>FE: 降级响应
+        FE-->>U: 兜底提示
+    end
+```
+
+---
+
+### 2.3 全局业务规则
 
 | 规则编号 | 规则名称 | 规则描述 | 适用范围 |
 |---------|---------|---------|---------|
