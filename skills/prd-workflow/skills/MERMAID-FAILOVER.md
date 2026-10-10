@@ -1,6 +1,8 @@
 # Mermaid 渲染主备切换机制（v2.0）
 
 > 实现位置：上游渲染咽喉点已随 2.1.0 归档至 `legacy/workflows/image_renderer.js`（**不可运行**）。本环境的渲染主备切换由 `mermaid-flow/scripts/mermaid_render.py`（本地通道，自带 Chrome 检测）与 `mermaid-skill/scripts/mermaid_live_link.py`（零依赖备选）承担；下文的通道顺序、熔断语义与降级日志约定对这两个入口同样适用。
+>
+> **通道默认值变更（v2.3.0）**：通道 B（Kroki API，出网）不再是默认降级路径——默认仅走本地通道（A/C）；Kroki 仅当用户在当次任务中显式同意外发、且未命中敏感特征时方可启用。判定规则以 prd-workflow SKILL.md §8 为准。
 
 ## 方案分层
 

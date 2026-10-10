@@ -149,8 +149,9 @@ N+2. 附录（术语表/参考资料）
 | `skills/ui-ux-pro-max/scripts/design_system.py` | 设计系统持久化（MASTER.md + tokens.json） | 标准库 | product-designer 主链路 |
 | `skills/htmlPrototype/main.py` | 原型平台分析/截图 | 标准库 | 见脚本内 help |
 | `scripts/generate_check_items.py` | `docs/checker.md` → `docs/check_items.py` 再生 | 标准库 | 维护用 |
+| `scripts/manifest_cli.py` | 产物依赖与失效台账（stale 检查 / 豁免 / 重新登记） | 标准库 | `python3 scripts/manifest_cli.py check`（退出码 0=全 fresh） |
 
-Mermaid 渲染主备切换（mmdc → Kroki → 子进程备援 + 熔断器）详见 **[skills/MERMAID-FAILOVER.md](skills/MERMAID-FAILOVER.md)**。**Kroki 出网判定规则（可执行）**：图表源码、标题或所在 PRD 段落命中任一敏感特征——「合同 / 金额 / 报价 / 客户名 / 账号 / 密钥 / 内部字段 / 未公开指标」——则**跳过 Kroki 通道，强制本地渲染**（`mermaid_render.py`，需本机 Chrome）；无敏感特征时方可走 Kroki。判定结论须在渲染说明中标注（例如"本地渲染：命中敏感特征『金额』"）。
+Mermaid 渲染主备切换（mmdc → Kroki → 子进程备援 + 熔断器）详见 **[skills/MERMAID-FAILOVER.md](skills/MERMAID-FAILOVER.md)**。**渲染通道默认本地，Kroki 出网需用户显式开启（可执行）**：Mermaid 渲染默认走本地通道（`mermaid_render.py`，需本机 Chrome）；仅当用户在本次任务中**显式同意外发**（例如"可以用在线渲染"）才允许走 Kroki，且同意仅当次任务有效、跨任务不继承。敏感特征规则作为额外防线**继续生效**：图表源码、标题或所在 PRD 段落命中任一敏感特征——「合同 / 金额 / 报价 / 客户名 / 账号 / 密钥 / 内部字段 / 未公开指标」——则**无论是否已获出网许可，一律跳过 Kroki、强制本地渲染**。判定结论须在渲染说明中标注（例如"本地渲染：默认策略"／"本地渲染：命中敏感特征『金额』"／"Kroki：用户显式同意且未命中敏感特征"）。
 
 ## 9. 子技能索引（skills/ 下，独立可用）
 
@@ -170,7 +171,8 @@ Mermaid 渲染主备切换（mmdc → Kroki → 子进程备援 + 熔断器）�
 
 ## 10. 版本与溯源
 
-- 本版：v2.2.0（2026-10-10，mask-team 2.2.0 收口）——访谈问题数口径收敛为单一事实来源（16-33，§2）、Kroki 出网判定规则可执行化（§8）、工具矩阵同步归档后实际脚本
+- 本版：v2.3.0（2026-10-10，mask-team 2.3.0）——新增产物依赖与失效台账机制（`scripts/manifest_cli.py`，§8）；Mermaid 渲染默认值反转：本地渲染为默认，Kroki 出网需用户显式同意，敏感特征规则降级为额外防线（§8）
+- 上一版：v2.2.0（2026-10-10，mask-team 2.2.0 收口）——访谈问题数口径收敛为单一事实来源（16-33，§2）、Kroki 出网判定规则可执行化（§8）、工具矩阵同步归档后实际脚本
 - 上一版：v2.1.0（2026-10-10，宿主原生化改造）——JS workflows 归档至 `legacy/`，方法论萃取至本文档；执行模型从"JS 管线自动执行"切换为"LLM 读文档执行 + Bash 调脚本"
 - 上游：v5.1.0（2026-04-20，gotomanutd + 红曼为帆，MIT-0）——Wiki 增强 / AI 驱动原型 / 设计系统持久化三大特性中的 Wiki 增强依赖上游宿主知识库（详见 legacy/LEGACY-NOTE.md），本环境不可用；其余能力经原生化改造后保留
 - 改造依据：《2026-10-09 prd-workflow 宿主原生化改造设计文档》（方案 B）

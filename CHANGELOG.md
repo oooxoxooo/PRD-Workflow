@@ -2,6 +2,23 @@
 
 本文件记录MASK产品天团（mask-team）的版本演进。格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
 
+## [2.3.0] - 2026-10-10
+
+### Added
+- **产物依赖与失效台账机制（manifest）**：响应外部评审 P0——Phase 3/4/5 并行化后，Phase 4 No-Go 触发 PRD 修订时，下游产物（design/validation）没有任何失效标记机制。新增：
+  - `skills/prd-workflow/scripts/manifest_cli.py`：六命令（`init` / `register` / `check` / `refresh` / `exempt` / `status`），零第三方依赖、Python 3.8+，风格对齐 `evolution_cli.py`；台账落盘于用户项目根 `.mask/manifest.json`，产物输入取 sha256 前 12 位哈希快照（`shasum -a 256` 可复算），目录型产物按文件逐个展开登记，`check` 退出码 0=全 fresh / 1=有 stale（供 Phase 6 汇编前硬断言脚本化）
+  - 主理人三处条款落文（`agents/mask-team-lead.md`）：① 工作目录树新增 `.mask/manifest.json`；② 成员回传后、转交前须 `register` 登记；③ Phase 4 No-Go 修订后必须 `check` 并对 stale 产物逐个裁决（重跑 / `exempt` 理由必填），**stale 重跑每产物上限 1 次**（同一产物二次 stale 强制串行化），总重跑轮数（门禁+复评+stale）在 Phase 6 通报并入 METRICS.md；Phase 6 新增汇编前硬断言（check 非 0 禁止交付）
+  - 失效语义：**stale ≠ 必重跑**——机器给信号、主理人按改动面裁决、豁免理由强制留痕；级联标记（输入节点 stale 则下游一并 stale）；本机制仅团队编排（TeamCreate 后）启用，单点直调不使用
+  - 验收：临时项目全流程实测通过——init/register（文件+目录展开）/篡改输入后 check 报 3 节点 stale 且退出码 1/级联 `input_stale` 命中/exempt 留痕并拒绝非 stale 产物（退出码 2）/refresh 旧态入 history/汇编前 check 退出码 0/`prd_version` 从 `.versions/vN` 自动探测
+  - 设计文档：工作区《2026-10-10 mask-team 产物依赖与失效机制设计文档》
+
+### Changed
+- **Mermaid 渲染默认值反转**（响应外部评审安全项）：原策略为"默认走 Kroki 出网、命中敏感关键词才强制本地"——关键词启发式漏检不可避免，PRD 属高敏文档，默认值方向错误。现改为**默认本地渲染（`mermaid_render.py`），Kroki 出网需用户在当次任务中显式同意（跨任务不继承）**；敏感特征规则保留并升级为额外防线（命中时即使已获许可也强制本地）。prd-workflow SKILL.md §8 与 skills/MERMAID-FAILOVER.md 同步落文
+- RELEASE.md 检查单新增两项：① 根目录与 `skills/` 下无 `.DS_Store`（2.2.0 曾声明清理但根目录残留至今，说明旧检查单未覆盖——附正样本控制写法）；② manifest 机制冒烟（`manifest_cli.py init` 退出码 0）
+
+### Fixed
+- 仓库卫生：删除包根与 `skills/` 下 2 个 `.DS_Store`，新增 `.gitignore`（`.DS_Store` / `__pycache__/` / `*.pyc`）
+
 ## [2.2.6] - 2026-10-10
 
 ### Changed

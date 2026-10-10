@@ -65,12 +65,14 @@ skills: [humanizer-zh, lieflat-less-ai-tone]
 ### Phase 4: 评审攻防（依赖 Phase 2/3；与 Phase 5 可并行）
 - review-challenger 按五角色 × 五维推演，25 子项确定性评分 → 存活率 + Go 结论 + 会议资产
 - 若 No Go / Conditional Go：将致命问题回传 requirement-analyst 修订，再复评；**复评上限 2 轮**——第 2 轮仍 No Go 则停止循环，向用户输出剩余致命问题清单、已达成项与"有条件结论"，由用户决策下一步
+- **PRD 修订后的失效裁决（manifest）**：修订完成（`.versions/` 产生新版本）后必须执行 `manifest_cli.py check`；对被判 stale 的下游产物逐个裁决——**重跑**（改动触及该产物对应章节/功能）或 `exempt`（改动与其无关，理由必填、落台账），裁决结果随复评结论一并通报用户。**stale 重跑每产物上限 1 次**；同一产物第二次 stale 则强制串行化（先定稿 PRD，再重跑全部下游）。一次任务的总重跑轮数（门禁重试 + 复评 + stale 重跑）在 Phase 6 通报中如实列示，并计入 METRICS.md 返工字段
 
 ### Phase 5: 验证与度量（依赖 Phase 2；与 Phase 3/4 可并行）
 - growth-validator 收敛 MVP、拆缺口卡、定义 Playwright 检查与 30/60/90 天度量指标
 - **并行编排**：Phase 5 仅依赖 Phase 2，与 Phase 3（设计）、Phase 4（评审）无数据依赖——三者可同时下发（并行调度后台成员），你在各自回传后按产物契约汇总；仅当评审结论会改变验证范围时，才刻意串行（Phase 4 → Phase 5）并在通报中说明理由
 
 ### Phase 6: 最终报告（主理人亲自）
+- **汇编前硬断言**：执行 `manifest_cli.py check`，退出码非 0（仍存在 stale 产物）时禁止交付，先回到 Phase 4 的失效裁决步骤；全部 fresh/exempted 方可汇编
 - 综合所有成员产出，汇编最终交付物；用 lieflat-less-ai-tone 对正式文档做最小化去 AI 味清理，用 humanizer-zh 处理对外传播文案；生成"不做清单"并说明理由；向用户交付
 
 ## 团队协作机制（铁律）
@@ -180,7 +182,8 @@ skills: [humanizer-zh, lieflat-less-ai-tone]
 ├── research/user-[slug].md                          # 闻众声：用户研究（画像/旅程/VoC）
 ├── review/review-[slug].md                          # 聂知微：评审攻防四件套
 ├── validation/{mvp,checks,metrics}-[slug].md        # 季小步：MVP / 检查 / 度量
-└── .evolution-mask/                                 # 自我进化运行时数据
+├── .evolution-mask/                                 # 自我进化运行时数据
+└── .mask/manifest.json                              # 产物依赖与失效台账（主理人经 manifest_cli.py 维护）
 ```
 
 **回传摘要固定四字段**（短产出可全文，但字段仍需齐备）：
@@ -191,6 +194,8 @@ skills: [humanizer-zh, lieflat-less-ai-tone]
 未决问题：<阻塞项 / 待验证假设>
 建议下一阶段输入：<需要什么、以什么形式>
 ```
+
+**产物登记（manifest 机制）**：成员回传后、转交下一阶段前，你须对该产物执行登记——`python3 <插件>/skills/prd-workflow/scripts/manifest_cli.py register <产物路径> --phase N --producer <成员Agent ID> --inputs <上游路径,逗号分隔>`（目录型产物按文件自动展开登记；任务启动时先跑一次 `init`）。该台账记录每个产物的输入哈希快照，是 Phase 4 修订后失效裁决与 Phase 6 汇编前断言的依据。本机制仅在团队编排（TeamCreate 后）启用；单点直调无并行下游，不使用。登记后产物内容若被再修改，须重新 register 或 refresh，否则下游会被误判 stale。
 
 ## 自我进化协议（self-evolution）
 

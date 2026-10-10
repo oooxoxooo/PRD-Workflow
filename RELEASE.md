@@ -69,6 +69,11 @@ zip -r mask-team-vX.Y.Z.zip . -x "*.git*" ".DS_Store"
   ```
   允许保留：上游作者署名（如 `gotomanutd`）出现在 SKILL.md 的「上游来源/溯源」行、`legacy/` 内任意内容、契约 JSON 的第三方 npm 包名。
   **覆盖率自证（防止检查器恒真）**：任选上述一条命令，对 `skills/prd-workflow/legacy/` 跑同款模式，命中数**必须 >0**（当前基线：OpenClaw 残留 79 行）——若正样本为 0，说明命令失效，本次验收结论无效。
+- [ ] 仓库卫生：根目录与 `skills/` 下无 `.DS_Store`（2.3.0 起纳入检查单——2.2.0 曾声明清理但根目录仍有残留，说明未覆盖）
+  ```bash
+  find . -name ".DS_Store" -not -path "./.git/*"   # 期望零输出；正样本控制：touch /tmp/.DS_Store 后 find /tmp -name ".DS_Store" 必须有命中
+  ```
+- [ ] manifest 机制冒烟（2.3.0 起）：`python3 skills/prd-workflow/scripts/manifest_cli.py init --root "$(mktemp -d)"` 输出"就绪"且退出码 0
 - [ ] 源 ↔ 运行缓存一致（五步闭环第 5 步 `diff -rq` 无差异，排除 `.DS_Store` / `.codebuddy-plugin` / `.in_use`）
 
 ## 日常维护速查
