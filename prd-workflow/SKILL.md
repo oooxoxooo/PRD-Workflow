@@ -28,7 +28,7 @@ interview.json 已存在？ ── 是 → 跳过访谈
         │否
 有详细业务文档？ ── 是 → 简化访谈（3-5 个确认问题）
         │否
-完整访谈（16-33 问，6 维度）
+完整访谈（16-28 问，6 维度）
 ```
 
 > 上游 v5.1.0 的 Wiki 知识库增强特性依赖上游宿主的 `wiki-ai/` 知识库目录，本环境不存在，**不可用**——不要尝试检索 Wiki，直接按标准访谈流程执行。
@@ -48,7 +48,7 @@ interview.json 已存在？ ── 是 → 跳过访谈
 | 业务目标 | 2-3 | 解决什么痛点？成功指标？ |
 | 用户场景 | 2-5 | 谁在什么时候使用？使用频率？ |
 
-**完成条件**（全部满足）：问题数 **16-33 问**（= 本节六维表 3-5×4 + 2-3 + 2-5 的上界；**该表是访谈问题数的唯一事实来源**，其他文档一律引用此处；有详细业务文档时 3-5 确认问题）；覆盖 6 维度；keyDecisions ≥12；用户确认理解正确。
+**完成条件**（全部满足）：问题数 **16-28 问**（= 本节六维表 3-5×4 + 2-3 + 2-5 的下界 3×4+2+2=16 与上界 5×4+3+5=28；**该表是访谈问题数的唯一事实来源**，其他文档一律引用此处；有详细业务文档时 3-5 确认问题）；覆盖 6 维度；keyDecisions ≥12；用户确认理解正确。
 
 **输出 interview.json**（落盘到项目工作目录）：
 
@@ -142,9 +142,9 @@ N+2. 附录（术语表/参考资料）
 | 工具 | 用途 | 依赖 | 调用示例 |
 |------|------|------|---------|
 | `skills/prd-export/engines/export_engine.py` | PRD.md → docx/PDF/HTML | `python-docx` + `pillow`；**本机已装好的解释器**：`~/.workbuddy/binaries/python/envs/default/bin/python`（裸 `python3` 无此依赖） | `<上述解释器> engines/export_engine.py PRD.md --formats docx,md` |
-| `skills/requirement-reviewer/engines/review_cli.py` | PRD 结构化评审（gate4 评分来源） | 标准库 | `python3 engines/review_cli.py <prd路径>` |
-| `skills/requirement-reviewer/engines/content_check_cli.py` | 内容检查问答引导 | 标准库 | 见脚本内 help |
-| `skills/mermaid-flow/scripts/mermaid_render.py` | Mermaid → 图片（本地渲染，自带 Chrome 检测） | 标准库 + Chrome | `python3 mermaid_render.py in.mmd out.png` |
+| `skills/requirement-reviewer/engines/review_cli.py` | PRD 结构化评审（gate4 评分来源） | 标准库 | `python3 engines/review_cli.py --prd <prd路径>` |
+| `skills/requirement-reviewer/engines/content_check_cli.py` | 内容检查问答引导 | `requests`（第三方，缺失时给出明确提示） | `python3 engines/content_check_cli.py --prd <prd路径>` |
+| `skills/mermaid-flow/scripts/mermaid_render.py` | Mermaid → 图片（本地渲染，自带 Chrome 检测） | `mmdc`（`npm i -g @mermaid-js/mermaid-cli`）+ Chrome | `python3 mermaid_render.py -i in.mmd -o out.png`（批量：`-i <目录> -o <目录> --batch`） |
 | `skills/mermaid-skill/scripts/mermaid_live_link.py` | 生成 Mermaid Live 链接（零本地依赖备选） | 标准库 | 见脚本内 help |
 | `skills/ui-ux-pro-max/scripts/design_system.py` | 设计系统持久化（MASTER.md + tokens.json） | 标准库 | product-designer 主链路 |
 | `skills/htmlPrototype/main.py` | 原型平台分析/截图 | 标准库 | 见脚本内 help |

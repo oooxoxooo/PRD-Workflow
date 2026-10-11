@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mask-team.local/skills/user-research/panel_schema.json",
+  "title": "合成用户 panel 单 persona 访谈结果",
+  "description": "合成用户 panel 中，单个 persona 隔离访谈的结构化输出契约。每个 persona 的访谈结果必须是符合本 schema 的 JSON，落盘至 research/panel-[slug].json。注意：synthetic 字段被 const 锁死为 true，作为防止合成结果被伪装成真实用户证据的技术兜底。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "persona_id",
+    "persona_name",
+    "synthetic",
+    "answers",
+    "pain_points",
+    "feature_priorities"
+  ],
+  "properties": {
+    "persona_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "persona 编号，与 panel spec 中的 persona_id 一致，如 P01。"
+    },
+    "persona_name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "persona 名称，用行为特征命名（如「随手记的合租上班族」），禁止花哨昵称。"
+    },
+    "synthetic": {
+      "const": true,
+      "description": "合成标记，恒为 true。schema 层锁死，防止合成结果被标注为真实用户证据。"
+    },
+    "answers": {
+      "type": "array",
+      "description": "逐题回答记录。每题一条，question_id 与任务书中的访谈问题编号对应。",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["question_id", "answer_text"],
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "访谈问题编号，如 Q1。"
+          },
+          "answer_text": {
+            "type": "string",
+            "minLength": 1,
+            "description": "该 persona 对该问题的回答原文，禁止空串。"
+          },
+          "emotion": {
+            "enum": ["positive", "neutral", "negative"],
+            "description": "回答时的情绪倾向（可选）：positive 正面 / neutral 中性 / negative 负面。"
+          }
+        }
+      }
+    },
+    "pain_points": {
+      "type": "array",
+      "description": "该 persona 在访谈中暴露的痛点清单，带严重度与频次自评。",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["description", "severity", "frequency"],
+        "properties": {
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "description": "痛点描述，尽量用该 persona 的口吻表述。"
+          },
+          "severity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "严重度自评：1 轻微不便，5 严重阻塞任务完成。"
+          },
+          "frequency": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "发生频次自评：1 极少遇到，5 几乎每次使用都遇到。"
+          }
+        }
+      }
+    },
+    "feature_priorities": {
+      "type": "array",
+      "description": "候选功能的优先级排序，rank 越小优先级越高。",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["feature", "rank"],
+        "properties": {
+          "feature": {
+            "type": "string",
+            "minLength": 1,
+            "description": "候选功能名称，与任务书给定的功能清单一致。"
+          },
+          "rank": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "优先级名次，从 1 开始，1 为最高优先级。"
+          }
+        }
+      }
+    },
+    "concept_test": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "概念测试结果（可选）：仅当访谈任务包含概念测试问题时填写。",
+      "required": ["score", "reason"],
+      "properties": {
+        "score": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "概念测试打分：1 完全不会用，5 一定会用。"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "打分理由，用该 persona 的口吻说明加分点与扣分点。"
+        }
+      }
+    }
+  }
+}

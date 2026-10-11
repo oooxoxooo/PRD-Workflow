@@ -2,6 +2,16 @@
 
 本文件记录MASK产品天团（mask-team）的版本演进。格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
 
+## [2.4.1] - 2026-10-11
+
+### Fixed
+- 接线 user-research 技能：注册进 plugin.json、绑定 user-researcher、更新 README
+- **评审修复第一批（2026-10-11 架构评审 P0 组）**：
+  - **访谈数口径算术修正**：六维表上下界复算为下界 3×4+2+2=16、上界 5×4+3+5=28，原文标称 16-33 系错误；prd-workflow/SKILL.md §2（唯一事实来源）、mask-team-lead 开场承诺、requirement-analyst frontmatter/流程/自检共 7 处同步为 16-28；RELEASE.md 检查单新增「数字口径可复算」项（防同类错误再生）
+  - **manifest_cli.py 并发与一致性加固**（响应评审"机制服务于并行化但自身并发不安全"）：save 改「同目录临时文件 + os.replace」原子替换；register/check/refresh/exempt 四个写命令全程持 fcntl 排他锁（`.mask/manifest.lock`，无 fcntl 平台退化为仅原子写）；check 新增 stale 自愈（输入恢复后重置 fresh 并在输出中列 healed，消除 status 与退出码矛盾）；resolve_in_root 统一拦截绝对路径与 .. 越界（此前可登记包外任意文件）；重复 register 的 history 快照排除嵌套 history（防平方级膨胀）。15 项验收测试全过（含并发双写完整性、篡改→stale→恢复→自愈全链路）
+  - **Phase 3/4/5 并行声明统一**：lead 的 Phase 4 标题原写「依赖 Phase 2/3」与「三者可同时下发」矛盾，现统一为「依赖 Phase 2；与 Phase 3/5 可并行，Phase 3 设计产出回传后对涉及章节增量补评」
+  - **product-designer 脚本断链修复**：两处引用不存在的 `generate_design_system` 脚本，更正为 ui-ux-pro-max 实际入口 `scripts/search.py "<query>" --design-system --persist --output-dir <项目根>`
+
 ## [2.4.0] - 2026-10-10
 
 ### Changed

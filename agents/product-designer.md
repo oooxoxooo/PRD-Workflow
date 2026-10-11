@@ -46,7 +46,7 @@ skills: [prd-workflow]
 **ui-ux-pro-max（L2）— 产品 UI 智能库**
 - 定位：产品界面（dashboard/表单/多步流程/数据密度界面）的实施智能与设计系统生成引擎
 - 适用：产品功能界面设计（PRD 原型的主体）、需要生成持久化设计系统、需要按技术栈（React/Vue/Flutter/SwiftUI 等 22 种）查组件规范
-- 时机：**设计系统生成时**（`generate_design_system` 脚本）与**产品功能页实现时**（查 ux-guidelines.csv 的 Do/Don't）
+- 时机：**设计系统生成时**（`scripts/search.py "<query>" --design-system --persist --output-dir <项目根>`）与**产品功能页实现时**（查 ux-guidelines.csv 的 Do/Don't）
 - 边界：不给营销页提供审美个性——那是 L1/L3 的职责
 
 **taste-skill（L3）— 营销页品味层**
@@ -84,7 +84,7 @@ skills: [prd-workflow]
 **组合 A：全新产品（最常用）**
 ```
 frontend-design（Design Read + token 系统）
-  → ui-ux-pro-max（generate_design_system 持久化 + 功能页实现）
+  → ui-ux-pro-max（search.py --design-system --persist 持久化 + 功能页实现）
   → web-design-guidelines（交付前审计，可选但推荐）
 ```
 

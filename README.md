@@ -18,7 +18,7 @@ Team 型（多角色协作团队，主理人编排）
 | product-strategist | 路向明 | 产品策略专家：8 维竞品对标、SWOT/五力/PESTLE、RICE 路线图 | competitive-product-research |
 | review-challenger | 聂知微 | 评审攻防专家：五角色推演、25 子项确定性评分、会议资产 | requirement-review-simulator |
 | growth-validator | 季小步 | 增长验证专家：MVP 收敛、缺口卡、Playwright 检查、30/60/90 度量 | idea-to-product |
-| user-researcher | 闻众声 | 用户研究专家：画像、旅程图、VoC 洞察、场景分析 | 内置方法论 |
+| user-researcher | 闻众声 | 用户研究专家：画像、旅程图、VoC 洞察、场景分析 | user-research |
 
 ## 标准工作流（SOP）
 
@@ -33,7 +33,7 @@ Phase 6 最终汇编      主理人（润色 + 不做清单 + 交付）
 
 预设 Workflow：WF-1 完整产品规划 / WF-2 竞品对标决策 / WF-3 评审冲刺 / WF-4 MVP 快速验证。
 
-## 自包含技能清单（prd-workflow 位于包根，其余 6 个位于 skills/）
+## 自包含技能清单（prd-workflow 位于包根，其余 7 个位于 skills/）
 
 | 技能 | 来源版本 | 用途 |
 |------|---------|------|
@@ -44,6 +44,7 @@ Phase 6 最终汇编      主理人（润色 + 不做清单 + 交付）
 | self-evolution | v1.1.0 | 自我进化：问题知识库（记录与规避）+ PLAYBOOK 规避规则手册（蒸馏注入/命中维护/降级归档）+ 用户画像沉淀 + 效率指标与进化报告（evolution_cli.py：init/inject/dedup/report），数据存项目侧 `.evolution-mask/` |
 | humanizer-zh | - | 对外文案去 AI 痕迹（风格化改写） |
 | lieflat-less-ai-tone | - | 正式文档去 AI 味（白名单最小改写，信息守恒） |
+| user-research | v0.4.0 | 用户研究：画像、旅程图、VoC 洞察、场景分析 |
 
 ## 使用示例
 
@@ -76,7 +77,7 @@ Phase 6 最终汇编      主理人（润色 + 不做清单 + 交付）
 ├── settings.json                     # {"agent": "mask-team-lead"}（Team 型必需）
 ├── agents/                           # 7 个 agent 定义
 ├── prd-workflow/                     # PRD 主链路工作流（含 9 个嵌套子技能）
-├── skills/                           # 6 个技能
+├── skills/                           # 7 个技能
 ├── avatars/                          # 8 张头像
 └── README.md / CHANGELOG.md / RELEASE.md
 ```
@@ -116,7 +117,7 @@ python3 <expert-manager>/scripts/register_expert.py "$PLUGINS/mask-team"
 
 > `validate_expert.py` / `register_expert.py` 由 WorkBuddy 自带的 expert-manager 技能提供，**不在本包内**。
 
-> **安装后自检**：validate 应输出 `✅ Expert package is valid!`；register 应输出 `🎉 Expert 'mask-team' is now registered and visible in WorkBuddy!`。若报 `Team type must have settings.json`，重建 `settings.json` 内容 `{"agent": "mask-team-lead"}`（该文件被外部进程清理是本包已知复发问题）。
+> **安装后自检**：validate 应输出 `✅ Expert package is valid!`；register 应输出 `🎉 Expert 'mask-team' is now registered and visible in WorkBuddy!`。若报 `Team type must have settings.json`，重建 `settings.json` 内容 `{"agent": "mask-team-lead"}`（该文件被外部进程清理是本包已知复发问题）。也可在包根运行 `bash scripts/preflight.sh` 做一键自检，上述问题会被自动发现并修复。
 > **看到它**：WorkBuddy 左侧栏「专家」→ 专家中心 → 我的专家 → **MASK产品天团**。
 > **运行依赖**：无系统级依赖。仅 `prd-workflow/skills/prd-export/engines/export_engine.py`（PRD 导出 docx/PDF）需 `python-docx` + `pillow`，可用解释器见 `prd-workflow/SKILL.md` §8。
 

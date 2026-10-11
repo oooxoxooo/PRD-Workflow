@@ -21,12 +21,27 @@ AI 内容检查器 v1.0
 
 import json
 import os
-import requests
 from typing import List, Dict, Optional
 from dataclasses import dataclass
 
 from .check_items import CHECK_ITEMS, CheckItem, Priority
 from .section_matcher import CheckTask
+
+
+def _import_requests():
+    """惰性导入 requests：仅在真正调用 AI API 时需要。
+
+    无 requests 的环境中，本模块仍可正常导入（标准库功能不受影响）；
+    仅在 _call_ai 真正发起 HTTP 请求时给出明确报错。
+    """
+    try:
+        import requests
+        return requests
+    except ImportError:
+        raise RuntimeError(
+            "缺少第三方依赖 requests：请先执行 `pip install requests`，"
+            "或不配置 api_key 以跳过 AI 检查（将返回模拟通过结果）。"
+        )
 
 
 @dataclass
@@ -204,7 +219,7 @@ class AIContentChecker:
                 "max_tokens": 1000
             }
 
-            response = requests.post(
+            response = _import_requests().post(
                 f"{self.api_config['base_url']}/chat/completions",
                 headers=headers,
                 json=data,

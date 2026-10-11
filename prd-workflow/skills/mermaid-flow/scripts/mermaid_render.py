@@ -189,16 +189,18 @@ def render_mermaid(input_path, output_path, width=DEFAULT_WIDTH,
 
 
 def batch_render(input_dir, output_dir, width=DEFAULT_WIDTH,
-                 background=DEFAULT_BACKGROUND, scale=1):
+                 background=DEFAULT_BACKGROUND, scale=1,
+                 puppeteer_config=None):
     """
     批量渲染目录中的所有 .mmd 文件
-    
+
     Args:
         input_dir: 输入目录路径
         output_dir: 输出目录路径
         width: 图像宽度
         background: 背景色
         scale: 缩放比例
+        puppeteer_config: puppeteer 配置文件路径（可选）
     
     Returns:
         tuple: (成功数，失败数)
@@ -233,7 +235,7 @@ def batch_render(input_dir, output_dir, width=DEFAULT_WIDTH,
         output_file = output_dir / f"{mmd_file.stem}.png"
         
         if render_mermaid(mmd_file, output_file, width, background, scale,
-                          puppeteer_config=getattr(args, 'puppeteer_config', None)):
+                          puppeteer_config=puppeteer_config):
             success_count += 1
         else:
             fail_count += 1
@@ -334,7 +336,8 @@ def main():
             args.output,
             args.width,
             args.background,
-            args.scale
+            args.scale,
+            puppeteer_config=args.puppeteer_config
         )
         print()
         print("=" * 50)

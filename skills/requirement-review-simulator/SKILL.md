@@ -85,6 +85,8 @@ Review our group-buying feature.
 
 五维：逻辑自洽（永不 N/A）· 技术友好 · 运营价值 · 老板满意 · 合规安全。公式 → [scoring-engine-deterministic.md](references/scoring-engine-deterministic.md)。
 
+> **保守分尺度区分**：子项保守分 1 是 0/1/2 子项尺度；维度中性保守分 6 是 0-10 维度尺度；两者不可混用。缺失子项与缺失维度的具体判定以评分引擎为准。
+
 ## 输出
 
 按采集表确认的格式生成：HTML 使用 [report-template-pro.html](references/report-template-pro.html)；Markdown 使用同一评审结构。格式锁与自检 → [review-playbook.md](references/review-playbook.md)。
@@ -99,7 +101,7 @@ Review our group-buying feature.
 - **合规**：免责声明；专业领域提醒咨询持牌人士
 
 **Rigid**（不可跳过）：
-- 25 子项逐项打分 · 存活率公式计算 · Go/Conditional/No Go 结论 · 杀手回复 TOP3 · RACI · 免责声明
+- 25 子项逐项打分 · 存活率公式计算 · Go / Conditional Go / No Go 结论 · 杀手回复 TOP3 · RACI · 免责声明
 
 **Flexible**（可按场景调整）：
 - 角色话术措辞风格 · 质疑排序 · 会议脚本详略 · 行动清单条目数量
@@ -116,7 +118,7 @@ N/A 维度须在信息采集清单第 10 项确认，不可在评审中途自行
 - **只有一句需求**：先追问业务目标和核心功能；用户拒绝补充时输出弱评审而非完整存活率
 - **合规敏感**：金融/医疗/法律/未成年人场景，合规安全维度必须参与评分
 - **角色质疑**：每角色至少 2 条有效质疑；信息不足时以保守假设质疑
-- **完成标准**：存活率≥70% 为 Conditional Pass；≥85% 为 Pass；<50% 为 Fail
+- **完成标准**：存活率评级与决策以评分引擎为唯一口径——S（85-100，Go）/ A（75-84.9，Conditional Go·少量条件）/ B（65-74.9，Conditional Go·明确整改清单）/ C（0-64.9，No Go·重写后再评）
 - **失败判定**：核心功能描述完全缺失且用户拒绝补充 → 告知无法有效评审
 
 ## 运行时说明

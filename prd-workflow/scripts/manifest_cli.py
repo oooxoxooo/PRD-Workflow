@@ -21,11 +21,18 @@
 """
 
 import argparse
+import contextlib
 import hashlib
 import json
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
+
+try:
+    import fcntl
+except ImportError:  # 无 fcntl 的平台（如 Windows）：退化为仅原子写，不加锁
+    fcntl = None
 
 SCHEMA = "mask-manifest/1"
 STATUSES = ("fresh", "stale", "exempted", "superseded")
@@ -60,9 +67,55 @@ def load(root):
 
 
 def save(root, data):
+    """原子写：先写同目录临时文件再 os.replace，杜绝半写/写坏 JSON。"""
     p = manifest_path(root)
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    tmp = p.with_name("%s.tmp.%d" % (p.name, os.getpid()))
+    tmp.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    os.replace(tmp, p)
+
+
+@contextlib.contextmanager
+def manifest_lock(root):
+    """跨进程互斥（fcntl flock，排他锁）。
+
+    Phase 3/4/5 并行编排时多个成员可能同时 register/check，
+    read-modify-write 必须整体持锁，否则并发下丢更新。
+    无 fcntl 的平台退化为无锁（save 的原子写仍保证不产出坏 JSON）。
+    """
+    lock_path = root / ".mask" / "manifest.lock"
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    fh = open(lock_path, "a", encoding="utf-8")
+    try:
+        if fcntl is not None:
+            fcntl.flock(fh.fileno(), fcntl.LOCK_EX)
+        yield
+    finally:
+        if fcntl is not None:
+            fcntl.flock(fh.fileno(), fcntl.LOCK_UN)
+        fh.close()
+
+
+def resolve_in_root(root, rel):
+    """把产物/输入路径解析到 root 内并返回绝对路径；拒绝越界。
+
+    pathlib 的 root / rel 在 rel 为绝对路径时会静默丢弃 root，
+    rel 含 .. 时可逃逸到 root 之外——两者都必须拦截：
+    台账只允许登记项目根目录内的文件。
+    """
+    candidate = Path(rel)
+    if not candidate.is_absolute():
+        candidate = root / candidate
+    resolved = candidate.resolve()
+    if resolved != root and root not in resolved.parents:
+        print("路径越界（只允许登记项目根目录内的文件）：%s" % rel, file=sys.stderr)
+        sys.exit(2)
+    return resolved
+
+
+def rel_key(root, resolved):
+    """归一化为 root 相对的正斜杠路径，作为台账节点的唯一键。"""
+    return resolved.relative_to(root).as_posix()
 
 
 def ensure(root, slug=None):
@@ -80,18 +133,18 @@ def ensure(root, slug=None):
 
 
 def expand_paths(root, rel):
-    """目录型产物按文件逐个展开（排序、跳过隐藏文件与 .versions）；返回相对路径列表。"""
-    target = root / rel
+    """目录型产物按文件逐个展开（排序、跳过隐藏文件与 .versions）；返回 root 相对路径列表。"""
+    target = resolve_in_root(root, rel)
     if not target.exists():
         print("产物不存在：%s" % rel, file=sys.stderr)
         sys.exit(2)
     if target.is_file():
-        return [rel]
+        return [rel_key(root, target)]
     files = []
     for f in sorted(target.rglob("*")):
         if not f.is_file():
             continue
-        r = f.relative_to(root).as_posix()
+        r = rel_key(root, f.resolve())
         parts = r.split("/")
         if any(p.startswith(".") for p in parts):
             continue
@@ -103,14 +156,14 @@ def expand_paths(root, rel):
 
 
 def snapshot_inputs(root, inputs):
-    """对输入列表取当前哈希快照；输入文件不存在时报错退出（登记时上游必须已在盘上）。"""
+    """对输入列表取当前哈希快照；输入文件不存在或越界时报错退出（登记时上游必须已在盘上）。"""
     snaps = {}
     for rel in inputs:
-        p = root / rel
+        p = resolve_in_root(root, rel)
         if not p.is_file():
             print("输入文件不存在，无法登记：%s" % rel, file=sys.stderr)
             sys.exit(2)
-        snaps[rel] = file_hash(p)
+        snaps[rel_key(root, p)] = file_hash(p)
     return snaps
 
 
@@ -136,30 +189,33 @@ def cmd_init(args):
 
 
 def cmd_register(args):
-    data = ensure(args.root)
-    inputs = [s.strip() for s in (args.inputs or "").split(",") if s.strip()]
-    snaps = snapshot_inputs(args.root, inputs)
-    count = 0
-    for rel in expand_paths(args.root, args.path):
-        entry = {
-            "phase": args.phase,
-            "producer": args.producer,
-            "inputs": inputs,
-            "input_hashes": dict(snaps),
-            "hash": file_hash(args.root / rel),
-            "status": "fresh",
-            "registered_at": now_iso(),
-        }
-        ver = detect_prd_version(args.root, rel)
-        if ver:
-            entry["prd_version"] = ver
-        old = data["artifacts"].get(rel)
-        if old:  # 重复登记等价于 refresh：旧状态留痕
-            entry.setdefault("history", []).append(
-                dict(old, superseded_at=now_iso(), status="superseded"))
-        data["artifacts"][rel] = entry
-        count += 1
-    save(args.root, data)
+    with manifest_lock(args.root):
+        data = ensure(args.root)
+        inputs = [s.strip() for s in (args.inputs or "").split(",") if s.strip()]
+        snaps = snapshot_inputs(args.root, inputs)
+        count = 0
+        for rel in expand_paths(args.root, args.path):
+            entry = {
+                "phase": args.phase,
+                "producer": args.producer,
+                "inputs": inputs,
+                "input_hashes": dict(snaps),
+                "hash": file_hash(args.root / rel),
+                "status": "fresh",
+                "registered_at": now_iso(),
+            }
+            ver = detect_prd_version(args.root, rel)
+            if ver:
+                entry["prd_version"] = ver
+            old = data["artifacts"].get(rel)
+            if old:  # 重复登记等价于 refresh：旧状态留痕（不含 history，防嵌套膨胀）
+                snapshot = {k: v for k, v in old.items() if k != "history"}
+                snapshot["status"] = "superseded"
+                snapshot["superseded_at"] = now_iso()
+                entry.setdefault("history", []).append(snapshot)
+            data["artifacts"][rel] = entry
+            count += 1
+        save(args.root, data)
     print("register: %s → %d 个节点（phase=%s producer=%s inputs=%d）"
           % (args.path, count, args.phase, args.producer, len(inputs)))
     return 0
@@ -202,64 +258,78 @@ def compute_stale(root, data):
 
 
 def cmd_check(args):
-    data = ensure(args.root)
-    stale, missing = compute_stale(args.root, data)
-    arts = data["artifacts"]
-    for rel, reason in list(stale.items()) + list(missing.items()):
-        e = arts[rel]
-        if e["status"] != "stale" or e.get("stale_reason") != reason:
-            e["status"] = "stale"
-            e["stale_reason"] = reason
-            e["stale_at"] = now_iso()
-    if stale or missing:
-        save(args.root, data)
+    with manifest_lock(args.root):
+        data = ensure(args.root)
+        stale, missing = compute_stale(args.root, data)
+        arts = data["artifacts"]
+        for rel, reason in list(stale.items()) + list(missing.items()):
+            e = arts[rel]
+            if e["status"] != "stale" or e.get("stale_reason") != reason:
+                e["status"] = "stale"
+                e["stale_reason"] = reason
+                e["stale_at"] = now_iso()
+        # stale 自愈：输入已恢复（哈希回到快照值或被修复）的产物重置 fresh，
+        # 否则 status 输出与 check 退出码会互相矛盾
+        healed = []
+        for rel, e in arts.items():
+            if e["status"] == "stale" and rel not in stale and rel not in missing:
+                e["status"] = "fresh"
+                e.pop("stale_reason", None)
+                e.pop("stale_at", None)
+                healed.append(rel)
+        if stale or missing or healed:
+            save(args.root, data)
     report = {rel: reason for rel, reason in
               list(stale.items()) + list(missing.items())}
-    print(json.dumps({"stale": report, "count": len(report)},
+    print(json.dumps({"stale": report, "count": len(report), "healed": healed},
                      ensure_ascii=False, indent=2))
     return 1 if report else 0
 
 
 def cmd_refresh(args):
-    data = ensure(args.root)
-    e = data["artifacts"].get(args.path)
-    if not e:
-        print("未登记的产物：%s（请先 register）" % args.path, file=sys.stderr)
-        return 2
-    if not (args.root / args.path).is_file():
-        print("产物不存在：%s" % args.path, file=sys.stderr)
-        return 2
-    old_snapshot = {k: v for k, v in e.items() if k != "history"}
-    old_snapshot["status"] = "superseded"
-    old_snapshot["superseded_at"] = now_iso()
-    e.setdefault("history", []).append(old_snapshot)
-    e["input_hashes"] = snapshot_inputs(args.root, e.get("inputs", []))
-    e["hash"] = file_hash(args.root / args.path)
-    e["status"] = "fresh"
-    e.pop("stale_reason", None)
-    e.pop("stale_at", None)
-    e["registered_at"] = now_iso()
-    ver = detect_prd_version(args.root, args.path)
-    if ver:
-        e["prd_version"] = ver
-    save(args.root, data)
+    with manifest_lock(args.root):
+        data = ensure(args.root)
+        key = rel_key(args.root, resolve_in_root(args.root, args.path))
+        e = data["artifacts"].get(key)
+        if not e:
+            print("未登记的产物：%s（请先 register）" % args.path, file=sys.stderr)
+            return 2
+        if not (args.root / key).is_file():
+            print("产物不存在：%s" % args.path, file=sys.stderr)
+            return 2
+        old_snapshot = {k: v for k, v in e.items() if k != "history"}
+        old_snapshot["status"] = "superseded"
+        old_snapshot["superseded_at"] = now_iso()
+        e.setdefault("history", []).append(old_snapshot)
+        e["input_hashes"] = snapshot_inputs(args.root, e.get("inputs", []))
+        e["hash"] = file_hash(args.root / key)
+        e["status"] = "fresh"
+        e.pop("stale_reason", None)
+        e.pop("stale_at", None)
+        e["registered_at"] = now_iso()
+        ver = detect_prd_version(args.root, key)
+        if ver:
+            e["prd_version"] = ver
+        save(args.root, data)
     print("refresh: %s → fresh（旧状态已入 history）" % args.path)
     return 0
 
 
 def cmd_exempt(args):
-    data = ensure(args.root)
-    e = data["artifacts"].get(args.path)
-    if not e:
-        print("未登记的产物：%s" % args.path, file=sys.stderr)
-        return 2
-    if e["status"] != "stale":
-        print("仅 stale 产物可豁免（当前 status=%s）" % e["status"], file=sys.stderr)
-        return 2
-    e["status"] = "exempted"
-    e["exempt_reason"] = args.reason
-    e["exempted_at"] = now_iso()
-    save(args.root, data)
+    with manifest_lock(args.root):
+        data = ensure(args.root)
+        key = rel_key(args.root, resolve_in_root(args.root, args.path))
+        e = data["artifacts"].get(key)
+        if not e:
+            print("未登记的产物：%s" % args.path, file=sys.stderr)
+            return 2
+        if e["status"] != "stale":
+            print("仅 stale 产物可豁免（当前 status=%s）" % e["status"], file=sys.stderr)
+            return 2
+        e["status"] = "exempted"
+        e["exempt_reason"] = args.reason
+        e["exempted_at"] = now_iso()
+        save(args.root, data)
     print("exempt: %s → exempted（理由：%s）" % (args.path, args.reason))
     return 0
 

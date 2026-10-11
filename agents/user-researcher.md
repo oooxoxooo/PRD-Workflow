@@ -8,6 +8,7 @@ profession:
   en: "User Researcher"
   zh: "用户研究专家"
 maxTurns: 60
+skills: [user-research]
 ---
 
 # 用户研究专家 - 闻众声

@@ -48,12 +48,14 @@ diff -rq . ~/.workbuddy/plugins/cache/my-experts/mask-team/X.Y.Z/ \
 # 5. 提交与打 tag（仅当已初始化 git 仓库时；marketplace 安装副本不含 .git，此项可选）
 git add -A && git commit -m "feat(scope): xxx" && git tag vX.Y.Z && git push origin main --tags
 
-# 6. 打包分发（zip）
-zip -r mask-team-vX.Y.Z.zip . -x "*.git*" ".DS_Store"
+# 6. 打包分发（统一走官方脚本，与 README「打包分享」同一口径；自动排除 .DS_Store / __pycache__ / 隐藏文件）
+python3 "$EXPERT_MANAGER/scripts/package_expert.py" . /tmp/out
+# 产物：/tmp/out/mask-team.zip（顶层目录 mask-team/），分发时重命名为 mask-team-vX.Y.Z.zip
 ```
 
 ## 维护检查单（每次发版前）
 
+- [ ] 运行 `bash scripts/preflight.sh` 全绿（自动清零 .DS_Store、修正 700 目录权限、重建缺失的 settings.json、校验 plugin.json 与技能 SKILL.md）
 - [ ] `validate_expert.py` 校验通过（零 error）
 - [ ] `settings.json` 存在且 `agent` 字段 = `agentName`（历史上曾被外部进程反复清理丢失——**实测执行 `register_expert.py` 之后即会触发剥离**；因此顺序必须是「注册 → 复检 settings.json → 再同步缓存/打包」，缺失时重建 `{"agent": "<agentName>"}` 或从缓存快照回填）
 - [ ] 版本号已更新，tag 已打
@@ -74,6 +76,10 @@ zip -r mask-team-vX.Y.Z.zip . -x "*.git*" ".DS_Store"
   find . -name ".DS_Store" -not -path "./.git/*"   # 期望零输出；正样本控制：touch /tmp/.DS_Store 后 find /tmp -name ".DS_Store" 必须有命中
   ```
 - [ ] manifest 机制冒烟（2.3.0 起）：`python3 prd-workflow/scripts/manifest_cli.py init --root "$(mktemp -d)"` 输出"就绪"且退出码 0
+- [ ] 数字口径可复算（2.4.1 起）：凡声明为"唯一事实来源"的数值区间，必须能从其来源表直接复算。当前清单：访谈问题数 16-28 = prd-workflow/SKILL.md §2 六维表下界 3×4+2+2=16、上界 5×4+3+5=28；全包引用同步检查
+  ```bash
+  rg -n "16-33" agents prd-workflow skills --glob '!**/legacy/**'   # 期望 0（历史条目：CHANGELOG、SKILL.md §10 版本史除外）
+  ```
 - [ ] 源 ↔ 运行缓存一致（五步闭环第 5 步 `diff -rq` 无差异，排除 `.DS_Store` / `.codebuddy-plugin` / `.in_use`）
 
 ## 日常维护速查
