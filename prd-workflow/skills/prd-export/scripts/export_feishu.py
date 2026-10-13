@@ -22,6 +22,7 @@ import shutil
 import tempfile
 import argparse
 import subprocess
+import webbrowser
 
 RETRYABLE = {'NETWORK', 'FAIL'}   # 可自动重试的错误类别
 MAX_RETRIES = 2                    # 自动重试次数（不含首次）
@@ -234,9 +235,9 @@ def export_to_feishu(md_path, title=None, open_url=True, interactive=True):
 
             if open_url:
                 try:
-                    subprocess.run(['open', url], check=False, timeout=10)
+                    webbrowser.open(url)
                     print('🌐 已自动打开文档链接')
-                except Exception:
+                except (OSError, webbrowser.Error):
                     print('（自动打开失败，请手动点击上方链接）')
             return {'ok': True, 'url': url, 'document_id': doc.get('document_id'), 'title': doc_title}
 

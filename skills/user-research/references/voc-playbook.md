@@ -1,4 +1,4 @@
-<!-- 隶属 mask-team / skills/user-research；路由入口见 ../SKILL.md -->
+<!-- 隶属 allan-team / skills/user-research；路由入口见 ../SKILL.md -->
 # VoC 洞察方法论底稿（voc-playbook）
 
 本文档是闻众声执行 VoC（用户之声）任务的完整操作规程。接到主理人下发的 VoC 任务后，先判断走哪种模式，再按"提取 → 综合 → 标注 → 落盘回传"的顺序执行。全文命令式语气即契约：写"禁止"就绝对不做，写"必须"就逐条满足。
@@ -166,7 +166,7 @@ python3 ../scripts/voc_pipeline.py --input feedback.csv --text-col content --out
 VoC 报告是长产出，执行以下流程，一步不许省：
 
 1. **落盘**：写入用户项目根目录 `research/user-[slug].md`，slug 由主理人在任务书中指定；未指定时先问主理人，不自创目录、不自造 slug。
-2. **回传**：通过 SendMessage 回传主理人 mask-team-lead，**不直接输出给用户**。回传摘要固定四字段，逐字格式：
+2. **回传**：通过 SendMessage 回传主理人 allan-team-lead，**不直接输出给用户**。回传摘要固定四字段，逐字格式：
 
 ```
 产物路径：research/user-[slug].md
@@ -269,4 +269,4 @@ VoC 报告是长产出，执行以下流程，一步不许省：
 3. 禁止把合成用户洞察标到 Medium 以上，禁止与真实材料混排。
 4. 禁止把假设写得像事实——凡推断必带"假设待验证"。
 5. 禁止少于 5 个独立数据点时画像或下结论——只产研究缺口清单。
-6. 禁止绕过主理人直接输出给用户——一切产出经 SendMessage 回传 mask-team-lead。
+6. 禁止绕过主理人直接输出给用户——一切产出经 SendMessage 回传 allan-team-lead。

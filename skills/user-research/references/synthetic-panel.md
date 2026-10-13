@@ -1,7 +1,7 @@
-<!-- 隶属 mask-team / skills/user-research；路由入口见 ../SKILL.md -->
+<!-- 隶属 allan-team / skills/user-research；路由入口见 ../SKILL.md -->
 # 合成用户 panel 协议（synthetic-panel）
 
-本文档是闻众声执行"合成用户 panel"任务的完整操作规程：用一组 AI 画像在彼此隔离的上下文中回答访谈问题，产出结构化结果。方法论借鉴 claude-persona（GitHub: takechanman1228/claude-persona）的"画像 panel + 隔离访谈 + 结构化输出"设计，但**不引入任何新运行时**——隔离完全用 mask-team 既有的"主理人单独下发子代理任务"机制实现，隔离力来自任务书设计而非外部工具。
+本文档是闻众声执行"合成用户 panel"任务的完整操作规程：用一组 AI 画像在彼此隔离的上下文中回答访谈问题，产出结构化结果。方法论借鉴 claude-persona（GitHub: takechanman1228/claude-persona）的"画像 panel + 隔离访谈 + 结构化输出"设计，但**不引入任何新运行时**——隔离完全用 allan-team 既有的"主理人单独下发子代理任务"机制实现，隔离力来自任务书设计而非外部工具。
 
 统一阅读顺序：**操作流程（第一节，按步执行）→ 质量护栏（第二节，逐条可检查）→ 示例片段（第三节，对照仿写）**。
 
@@ -232,7 +232,7 @@
 ## 回传契约
 
 - panel 数据落盘 `research/panel-[slug].json`；洞察摘要落盘 `research/user-[slug].md` 的独立合成小节。slug 由主理人指定，不自创目录。
-- 产出经 SendMessage 回传主理人 mask-team-lead，不直接输出给用户；回传摘要固定四字段：
+- 产出经 SendMessage 回传主理人 allan-team-lead，不直接输出给用户；回传摘要固定四字段：
 
 ```text
 产物路径：research/panel-[slug].json（另：research/user-[slug].md 合成小节）

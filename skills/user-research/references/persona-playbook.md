@@ -1,4 +1,4 @@
-<!-- 隶属 mask-team / skills/user-research；路由入口见 ../SKILL.md -->
+<!-- 隶属 allan-team / skills/user-research；路由入口见 ../SKILL.md -->
 # 画像 Playbook（persona-playbook）
 
 把"用户"从抽象名词变成可共情的具体的人。画像不是人口普查表，而是一份**带证据链的决策依据**——它告诉团队：设计必须首先满足谁、他们真正想完成什么、用什么话描述自己的处境。
@@ -141,7 +141,7 @@
 ### 回传契约
 
 - 长产出先落盘：画像写入用户项目根目录 `research/user-[slug].md`，slug 由主理人在任务书中指定，不自创目录。
-- 经 SendMessage 回传主理人 mask-team-lead，摘要固定四字段：
+- 经 SendMessage 回传主理人 allan-team-lead，摘要固定四字段：
 
 ```text
 产物路径：research/user-[slug].md

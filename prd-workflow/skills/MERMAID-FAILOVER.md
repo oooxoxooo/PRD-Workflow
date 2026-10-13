@@ -1,8 +1,15 @@
 # Mermaid 渲染主备切换机制（v2.0）
 
-> 实现位置：上游渲染咽喉点已随 2.1.0 归档至 `legacy/workflows/image_renderer.js`（**不可运行**）。本环境的渲染主备切换由 `mermaid-flow/scripts/mermaid_render.py`（本地通道，自带 Chrome 检测）与 `mermaid-skill/scripts/mermaid_live_link.py`（零依赖备选）承担；下文的通道顺序、熔断语义与降级日志约定对这两个入口同样适用。
+> ⚠️ **现状标注（v2.4.2 复核）**：本文描述的**熔断器、JSONL 降级日志、Kroki 通道 B、自动瀑布切换均属已归档的 JS 实现**（原归档于 `legacy/workflows/image_renderer.js`，该目录已随 2.4.2 从包中移除），现行 Python 入口**均未实现**——`mermaid-flow/scripts/mermaid_render.py` 仅本地通道（自带 Chrome 检测），`mermaid-skill/scripts/mermaid_live_link.py` 为零依赖备选。下文"瀑布逻辑/错误检测/日志/配置"各节仅作 legacy 溯源参考，**不得当作现行能力引用**。
+>
+> **现行降级行为**：本地渲染失败 → 人工改用 `mermaid_live_link.py` 或在线编辑器（mermaid.live）；Kroki 出网需用户显式同意且未命中敏感特征（prd-workflow SKILL.md §8）。渲染失败时如实报告，不静默降级。
 >
 > **通道默认值变更（v2.3.0）**：通道 B（Kroki API，出网）不再是默认降级路径——默认仅走本地通道（A/C）；Kroki 仅当用户在当次任务中显式同意外发、且未命中敏感特征时方可启用。判定规则以 prd-workflow SKILL.md §8 为准。
+
+---
+**以下为上游 legacy 实现的原始文档（历史参考，现行不可运行）**
+
+> 实现位置：上游渲染咽喉点曾归档至 `legacy/workflows/image_renderer.js`（2.4.2 起已从包中移除）。本环境的渲染主备切换由 `mermaid-flow/scripts/mermaid_render.py`（本地通道，自带 Chrome 检测）与 `mermaid-skill/scripts/mermaid_live_link.py`（零依赖备选）承担；~~下文的通道顺序、熔断语义与降级日志约定对这两个入口同样适用~~（已修正：熔断/日志约定不适用于 Python 入口）。
 
 ## 方案分层
 

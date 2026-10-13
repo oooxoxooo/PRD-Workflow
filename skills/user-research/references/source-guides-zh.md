@@ -1,4 +1,4 @@
-<!-- 隶属 mask-team / skills/user-research；voc-playbook 模式 2 配套手册 -->
+<!-- 隶属 allan-team / skills/user-research；voc-playbook 模式 2 配套手册 -->
 # 中文信源采集操作手册（source-guides-zh）
 
 本手册是 voc-playbook 模式 2（主动采集）的配套操作手册：模式 2 判定用中文互联网公开信源时，按本手册逐平台执行采集。voc-playbook 管"提取、综合、标注、回传"，本手册管"去哪找、找什么、读哪类内容、各平台有什么坑"。
@@ -261,4 +261,4 @@
 2. 退回模式 1：请用户提供导出材料（评论导出、问卷、工单、客服记录），按 voc-playbook 模式 1 的材料类型表执行分析。
 3. 最终产物开头显著位置标注"采集环节降级"及降级范围（哪些信源缺失、改用何种替代材料）。
 4. 降级不影响其余硬约束：幻觉 URL 铁律、置信度三级、脱敏前置、四字段回传逐条照旧执行。
-5. 产物路径、回传格式不变：落盘 `research/user-[slug].md`，经 SendMessage 向主理人 mask-team-lead 回传四字段——产物路径 / 关键结论（≤5 条）/ 未决问题 / 建议下一阶段输入。
+5. 产物路径、回传格式不变：落盘 `research/user-[slug].md`，经 SendMessage 向主理人 allan-team-lead 回传四字段——产物路径 / 关键结论（≤5 条）/ 未决问题 / 建议下一阶段输入。

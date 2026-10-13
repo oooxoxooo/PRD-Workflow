@@ -16,7 +16,7 @@
 用法：
   python3 manifest_cli.py <command> [--root DIR] [其他参数]
 
-设计文档：《2026-10-10 mask-team 产物依赖与失效机制设计文档》（mask-team v2.3.0 引入）。
+设计文档：《2026-10-10 allan-team 产物依赖与失效机制设计文档》（allan-team v2.3.0 引入）。
 仅在团队编排（TeamCreate 后）启用；单点直调场景无并行下游，不使用本机制。
 """
 
@@ -346,7 +346,7 @@ def cmd_status(args):
 
 def main():
     ap = argparse.ArgumentParser(
-        description="mask-team 产物依赖与失效台账",
+        description="allan-team 产物依赖与失效台账",
         usage="%(prog)s <command> [--root DIR] [参数]")
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("--root", type=Path, default=Path.cwd(), help="项目根目录（默认 cwd）")

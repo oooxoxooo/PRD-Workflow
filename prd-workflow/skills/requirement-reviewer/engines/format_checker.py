@@ -29,7 +29,7 @@ class FormatChecker:
             print("⚠️  python-docx 未安装，Word文档格式检查功能已禁用")
             print("💡 安装命令：pip3 install python-docx")
 
-def check(self, word_doc_path: str) -> Dict:
+    def check(self, word_doc_path: str) -> Dict:
         """
         检查 Word 文档的表面规范
         
@@ -199,8 +199,8 @@ def check(self, word_doc_path: str) -> Dict:
                 try:
                     level = int(para.style.name.split(" ")[-1])
                     headings.append((level, para.text[:50], i))
-                except:
-                    pass
+                except ValueError:
+                    pass  # 非标准编号样式（如 Heading 自定义名），跳过该段
 
         # 检查是否有标题
         if not headings:

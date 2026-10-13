@@ -13,58 +13,83 @@ import subprocess
 from datetime import datetime
 from pathlib import Path
 
-from docx import Document
-from docx.shared import Inches, Pt, Cm
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.oxml.ns import qn
-from PIL import Image
+try:  # 惰性依赖：仅 docx/feishu 路径需要，md-only 导出不应因缺 python-docx/pillow 失败
+    from docx import Document
+    from docx.shared import Inches, Pt, Cm
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.oxml.ns import qn
+    from PIL import Image
+    DOCX_AVAILABLE = True
+except ImportError as _dep_err:  # 延迟报错：仅在真正用到 docx 格式时提示安装
+    DOCX_AVAILABLE = False
+    _DOCX_IMPORT_ERROR = str(_dep_err)
+    Document = Inches = Pt = Cm = WD_ALIGN_PARAGRAPH = qn = Image = None
+
+
+def _require_docx():
+    """用到 docx 路径时才校验第三方依赖，给出明确安装指引。"""
+    if not DOCX_AVAILABLE:
+        print('❌ 缺少依赖（python-docx / pillow）：%s' % _DOCX_IMPORT_ERROR)
+        print("💡 请安装：pip install python-docx pillow（或使用带依赖的解释器）")
+        sys.exit(2)
 
 
 # ==================== 配置 ====================
 
-DEFAULT_CONFIG = {
-    "page": {
-        "margin": {
-            "top": Cm(2.54),
-            "bottom": Cm(2.54),
-            "left": Cm(3.17),
-            "right": Cm(3.17)
+_DEFAULT_CONFIG = None
+
+
+def get_config():
+    """惰性构建默认配置（依赖 docx 的尺寸单位，首次调用时创建并缓存）。"""
+    global _DEFAULT_CONFIG
+    if _DEFAULT_CONFIG is None:
+        _require_docx()
+        _DEFAULT_CONFIG = {
+            "page": {
+                "margin": {
+                    "top": Cm(2.54),
+                    "bottom": Cm(2.54),
+                    "left": Cm(3.17),
+                    "right": Cm(3.17)
+                }
+            },
+            "font": {
+                "chinese": "宋体",
+                "size": {
+                    "title": Pt(22),
+                    "heading1": Pt(16),
+                    "heading2": Pt(15),
+                    "heading3": Pt(14),
+                    "heading4": Pt(12),
+                    "body": Pt(12)
+                }
+            },
+            "image": {
+                "max_width": Inches(6.5),
+                "max_height": Inches(5.0)
+            },
+            "line_spacing": 1.5,
+            "header_footer": {
+                "enabled": True,
+                "header_text": "产品需求文档",
+                "footer_text": "第 {page} 页",
+                "font_size": Pt(9)
+            },
+            "toc": {
+                "enabled": True,
+                "max_level": 3  # 生成到 H3
+            }
         }
-    },
-    "font": {
-        "chinese": "宋体",
-        "size": {
-            "title": Pt(22),
-            "heading1": Pt(16),
-            "heading2": Pt(15),
-            "heading3": Pt(14),
-            "heading4": Pt(12),
-            "body": Pt(12)
-        }
-    },
-    "image": {
-        "max_width": Inches(6.5),
-        "max_height": Inches(5.0)
-    },
-    "line_spacing": 1.5,
-    "header_footer": {
-        "enabled": True,
-        "header_text": "产品需求文档",
-        "footer_text": "第 {page} 页",
-        "font_size": Pt(9)
-    },
-    "toc": {
-        "enabled": True,
-        "max_level": 3  # 生成到 H3
-    }
-}
+    return _DEFAULT_CONFIG
 
 
 # ==================== 工具函数 ====================
 
-def set_font(run, font_name='宋体', size=Pt(12), bold=False):
+def set_font(run, font_name='宋体', size=None, bold=False):
     """设置字体"""
     from docx.oxml.ns import qn
+    if size is None:
+        size = Pt(12)
     run.font.name = font_name
     run.font.size = size
     run.font.bold = bold
@@ -72,8 +97,12 @@ def set_font(run, font_name='宋体', size=Pt(12), bold=False):
     run._element.rPr.rFonts.set(qn('w:ascii'), font_name)
 
 
-def insert_image_smart(doc, image_path, caption, max_width=Inches(6.5), max_height=Inches(5.0)):
+def insert_image_smart(doc, image_path, caption, max_width=None, max_height=None):
     """智能插入图片"""
+    if max_width is None or max_height is None:
+        cfg = get_config()
+        max_width = cfg['image']['max_width']
+        max_height = cfg['image']['max_height']
     if not os.path.exists(image_path):
         print(f'❌ 图片不存在：{image_path}')
         return False
@@ -113,7 +142,10 @@ def insert_image_smart(doc, image_path, caption, max_width=Inches(6.5), max_heig
         return False
 
 
-def add_header_footer(doc, header_text="产品需求文档", footer_text="第 {page} 页", font_size=Pt(9)):
+def add_header_footer(doc, header_text="产品需求文档", footer_text="第 {page} 页", font_size=None):
+    """添加页眉页脚"""
+    if font_size is None:
+        font_size = Pt(9)
     """添加页眉页脚"""
     for section in doc.sections:
         # 页眉
@@ -172,6 +204,8 @@ def add_toc(doc, max_level=3):
 
 def markdown_to_word(markdown_path, output_path, images_dir=None, include_toc=True, include_header_footer=True):
     """将 Markdown 转换为 Word"""
+    _require_docx()
+    cfg = get_config()
     with open(markdown_path, 'r', encoding='utf-8') as f:
         content = f.read()
 
@@ -180,17 +214,17 @@ def markdown_to_word(markdown_path, output_path, images_dir=None, include_toc=Tr
 
     # 页面边距
     section = doc.sections[0]
-    section.top_margin = DEFAULT_CONFIG['page']['margin']['top']
-    section.bottom_margin = DEFAULT_CONFIG['page']['margin']['bottom']
-    section.left_margin = DEFAULT_CONFIG['page']['margin']['left']
-    section.right_margin = DEFAULT_CONFIG['page']['margin']['right']
+    section.top_margin = cfg['page']['margin']['top']
+    section.bottom_margin = cfg['page']['margin']['bottom']
+    section.left_margin = cfg['page']['margin']['left']
+    section.right_margin = cfg['page']['margin']['right']
 
     # 添加页眉页脚
     if include_header_footer:
         add_header_footer(doc,
-                         DEFAULT_CONFIG['header_footer']['header_text'],
-                         DEFAULT_CONFIG['header_footer']['footer_text'],
-                         DEFAULT_CONFIG['header_footer']['font_size'])
+                         cfg['header_footer']['header_text'],
+                         cfg['header_footer']['footer_text'],
+                         cfg['header_footer']['font_size'])
     
     i = 0
     while i < len(lines):
@@ -203,21 +237,21 @@ def markdown_to_word(markdown_path, output_path, images_dir=None, include_toc=Tr
         # 标题 #
         if line.startswith('# '):
             p = doc.add_heading(line[2:], level=1)
-            set_font(p.runs[0], '宋体', DEFAULT_CONFIG['font']['size']['heading1'], bold=True)
+            set_font(p.runs[0], '宋体', cfg['font']['size']['heading1'], bold=True)
             i += 1
             continue
         
         # 标题 ##
         if line.startswith('## '):
             p = doc.add_heading(line[3:], level=2)
-            set_font(p.runs[0], '宋体', DEFAULT_CONFIG['font']['size']['heading2'], bold=True)
+            set_font(p.runs[0], '宋体', cfg['font']['size']['heading2'], bold=True)
             i += 1
             continue
         
         # 标题 ###
         if line.startswith('### '):
             p = doc.add_heading(line[4:], level=3)
-            set_font(p.runs[0], '宋体', DEFAULT_CONFIG['font']['size']['heading3'], bold=True)
+            set_font(p.runs[0], '宋体', cfg['font']['size']['heading3'], bold=True)
             i += 1
             continue
         
@@ -269,14 +303,14 @@ def markdown_to_word(markdown_path, output_path, images_dir=None, include_toc=Tr
             p = doc.add_paragraph(style='List Bullet')
             text = re.sub(r'^(-|\d+\.\s+)\s*', '', line)
             run = p.add_run(text)
-            set_font(run, '宋体', DEFAULT_CONFIG['font']['size']['body'])
+            set_font(run, '宋体', cfg['font']['size']['body'])
             i += 1
             continue
         
         # 普通段落
         p = doc.add_paragraph()
         run = p.add_run(line)
-        set_font(run, '宋体', DEFAULT_CONFIG['font']['size']['body'])
+        set_font(run, '宋体', cfg['font']['size']['body'])
         i += 1
     
     doc.save(output_path)

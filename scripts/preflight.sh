@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# mask-team 发版前自动检查（与 RELEASE.md 维护检查单配套）
+# allan-team 发版前自动检查（与 RELEASE.md 维护检查单配套）
 # 用法：在包根目录运行 bash scripts/preflight.sh
 set -euo pipefail
 
@@ -23,13 +23,13 @@ while IFS= read -r d; do
 done < <(find . -type d -perm 700 -not -path "./.git*" -not -path "./.git/*")
 echo "✅ 目录权限检查完成（修正 ${fixed} 个 700 目录）"
 
-# c. settings.json 存在且含 "agent": "mask-team-lead"（本包已知复发问题：被外部进程清理）
+# c. settings.json 存在且含 "agent": "allan-team-lead"（本包已知复发问题：被外部进程清理）
 if [ ! -f settings.json ]; then
-  echo '{"agent": "mask-team-lead"}' > settings.json
-  echo "⚠️  settings.json 缺失，已自动重建为 {\"agent\": \"mask-team-lead\"}"
-elif ! grep -q '"agent"[[:space:]]*:[[:space:]]*"mask-team-lead"' settings.json; then
-  echo '{"agent": "mask-team-lead"}' > settings.json
-  echo "⚠️  settings.json 内容不含 \"agent\": \"mask-team-lead\"，已自动重建"
+  echo '{"agent": "allan-team-lead"}' > settings.json
+  echo "⚠️  settings.json 缺失，已自动重建为 {\"agent\": \"allan-team-lead\"}"
+elif ! grep -q '"agent"[[:space:]]*:[[:space:]]*"allan-team-lead"' settings.json; then
+  echo '{"agent": "allan-team-lead"}' > settings.json
+  echo "⚠️  settings.json 内容不含 \"agent\": \"allan-team-lead\"，已自动重建"
 else
   echo "✅ settings.json 正常"
 fi

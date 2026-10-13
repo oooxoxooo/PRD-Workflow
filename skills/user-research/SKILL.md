@@ -56,7 +56,7 @@ description: 用户研究技能：用户画像、用户旅程图、VoC 反馈洞
 ```
 
 - 衔接：画像与场景假设供 requirement-analyst 访谈设计取材；现状锚点供 product-strategist 对标；待验证假设清单供 growth-validator 收敛 MVP。
-- 产出经 SendMessage 回传 mask-team-lead，不直接输出给用户。
+- 产出经 SendMessage 回传 allan-team-lead，不直接输出给用户。
 
 ## 版本
 

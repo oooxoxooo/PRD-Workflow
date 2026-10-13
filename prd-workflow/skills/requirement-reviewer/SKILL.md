@@ -12,7 +12,7 @@ description: "PRD/requirement document reviewer with plugin architecture. Suppor
 
 ### 自动安装（推荐）
 
-本技能随 mask-team 专家包提供，仅依赖 Python 标准库，无需额外安装：
+本技能随 allan-team 专家包提供，仅依赖 Python 标准库，无需额外安装：
 
 ```bash
 # 路径基准：prd-workflow 技能根

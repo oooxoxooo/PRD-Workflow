@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://mask-team.local/skills/user-research/panel_schema.json",
+  "$id": "https://allan-team.local/skills/user-research/panel_schema.json",
   "title": "合成用户 panel 单 persona 访谈结果",
   "description": "合成用户 panel 中，单个 persona 隔离访谈的结构化输出契约。每个 persona 的访谈结果必须是符合本 schema 的 JSON，落盘至 research/panel-[slug].json。注意：synthetic 字段被 const 锁死为 true，作为防止合成结果被伪装成真实用户证据的技术兜底。",
   "type": "object",

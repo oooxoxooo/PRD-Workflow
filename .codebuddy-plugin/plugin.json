@@ -1,13 +1,13 @@
 {
-  "name": "mask-team",
-  "version": "2.4.1",
-  "description": "Senior product expert team (mask-team) covering requirement analysis, PRD generation, review simulation, competitive strategy, user research, and MVP validation.",
+  "name": "allan-team",
+  "version": "2.4.2",
+  "description": "Senior product expert team (allan-team) covering requirement analysis, PRD generation, review simulation, competitive strategy, user research, and MVP validation.",
   "author": {
     "name": "Ken",
     "email": "ken@transfereasy.com"
   },
   "agents": [
-    "./agents/mask-team-lead.md",
+    "./agents/allan-team-lead.md",
     "./agents/requirement-analyst.md",
     "./agents/product-designer.md",
     "./agents/product-strategist.md",
@@ -26,9 +26,9 @@
     "./skills/user-research"
   ],
   "expertType": "team",
-  "agentName": "mask-team-lead",
+  "agentName": "allan-team-lead",
   "teamInfo": {
-    "leadAgent": "mask-team-lead",
+    "leadAgent": "allan-team-lead",
     "memberAgents": [
       "requirement-analyst",
       "product-designer",
@@ -39,12 +39,12 @@
     ]
   },
   "displayName": {
-    "en": "MASK PM Expert Team",
-    "zh": "MASK产品天团"
+    "en": "Allan Product Team",
+    "zh": "Allan产品团队"
   },
   "profession": {
-    "en": "MASK PM Expert Team",
-    "zh": "MASK产品天团"
+    "en": "Allan Product Team",
+    "zh": "Allan产品团队"
   },
   "displayDescription": {
     "en": "Full-lifecycle product team: requirement interviews, PRD generation, review simulation, competitive benchmarking, user research, and MVP validation.",
@@ -56,7 +56,7 @@
     "zh": "我有一个产品想法，帮我从需求访谈开始走完整的产品规划流程",
     "en": "I have a product idea. Start with requirement interviews and run the full product planning workflow."
   },
-  "plugin": "mask-team",
+  "plugin": "allan-team",
   "tags": [
     {
       "en": "Product Planning",
@@ -87,16 +87,16 @@
   ],
   "members": [
     {
-      "id": "mask-team-lead",
+      "id": "allan-team-lead",
       "displayName": {
-        "en": "Elon Mask",
-        "zh": "Elon Mask"
+        "en": "Allen",
+        "zh": "Allen"
       },
       "profession": {
         "en": "Chief Product Officer",
         "zh": "首席产品官"
       },
-      "avatar": "avatars/mask-team-lead.png",
+      "avatar": "avatars/allan-team-lead.png",
       "role": "lead"
     },
     {

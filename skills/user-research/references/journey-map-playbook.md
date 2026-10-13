@@ -1,4 +1,4 @@
-<!-- 隶属 mask-team / skills/user-research；路由入口见 ../SKILL.md -->
+<!-- 隶属 allan-team / skills/user-research；路由入口见 ../SKILL.md -->
 # 旅程图 Playbook（journey-map-playbook）
 
 把"用户怎么用"从流程图变成一条带情绪的证据链。旅程图回答的不是"系统有几个页面"，而是：**用户在每个阶段想做什么、碰到了什么、感觉如何、哪里值得改**——情绪低谷与痛点的交汇处，就是产品机会的坐标。
@@ -130,7 +130,7 @@
 ### 回传契约
 
 - 长产出先落盘：旅程图写入用户项目根目录 `research/user-[slug].md` 的旅程节，slug 由主理人在任务书中指定，不自创目录。
-- 经 SendMessage 回传主理人 mask-team-lead，摘要固定四字段：
+- 经 SendMessage 回传主理人 allan-team-lead，摘要固定四字段：
 
 ```text
 产物路径：research/user-[slug].md

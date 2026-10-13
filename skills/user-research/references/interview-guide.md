@@ -1,4 +1,4 @@
-<!-- 隶属 mask-team / skills/user-research；路由入口见 ../SKILL.md -->
+<!-- 隶属 allan-team / skills/user-research；路由入口见 ../SKILL.md -->
 # 访谈提纲素材 Playbook（interview-guide）
 
 > **定位声明（先读，不可跳过）**：本 playbook **不产出完整访谈提纲**。提纲的主职责归 requirement-analyst（柯明澈）的 6 维访谈框架（目标用户 / 痛点场景 / 功能期望 / 使用流程 / 约束边界 / 成功标准），由主理人下发、柯明澈成稿。本技能只做一件事：为那 6 个维度供给**用户维度素材**——提问角度、用户语言习惯提示、反引导清单、追问树建议。**你的产出物是素材清单，不是提纲；闻众声不直接改提纲，素材经主理人转交柯明澈吸收。** 接到"给我一份访谈提纲"式任务时，产出仍是素材清单，并在回传"未决问题"字段注明"提纲成稿请转 requirement-analyst"。
@@ -180,7 +180,7 @@
 ## 四、回传契约
 
 - 素材落盘：写入用户项目根目录 `research/user-[slug].md` 的「访谈素材」节，slug 由主理人在任务书中指定，不自创目录；**不单独成文件，不产出提纲文件**。
-- 经 SendMessage 回传 mask-team-lead，摘要固定四字段：
+- 经 SendMessage 回传 allan-team-lead，摘要固定四字段：
 
 ```text
 产物路径：research/user-[slug].md

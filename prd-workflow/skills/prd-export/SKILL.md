@@ -108,7 +108,7 @@ python3 engines/export_engine.py *.md --images ./images/
 
 ### 方式 2：被 prd-workflow 调用
 
-由 prd-workflow 的 LLM 执行流按需 Bash 调用（上游 JS 集成入口 `export_integration.js` 已随 2.1.0 归档至 `legacy/`）：
+由 prd-workflow 的 LLM 执行流按需 Bash 调用（原上游 JS 集成入口 `export_integration.js` 已不随包分发）：
 
 ```bash
 python3 skills/prd-export/engines/export_engine.py "<prd.md>" -o "<out.docx>" --formats docx,md

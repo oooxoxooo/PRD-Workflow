@@ -1,13 +1,36 @@
 # Changelog
 
-本文件记录MASK产品天团（mask-team）的版本演进。格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
+本文件记录Allan产品团队（allan-team）的版本演进。格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
+
+## [2.4.2] - 2026-10-13
+
+### Changed
+- **品牌更名**：包名 `mask-team` → `allan-team`；主理人花名 "Elon Mask" → "Allen"（agent id 同步 `allan-team-lead`，含 agent 文件与头像文件重命名）；显示名「MASK产品天团 / MASK PM Expert Team」→「Allan产品团队 / Allan Product Team」。共更新 27 个文件（plugin.json 身份字段、agents、README、SKILL.md、脚本与测试中的自引用路径）；历史 CHANGELOG 条目同步跟随新名
+
+### Fixed
+- **htmlPrototype 命令注入修复**：`main.py` 的 `os.system(f"open {html_path}")` 存在命令注入面且仅限 macOS，改为 `webbrowser.open(Path.as_uri())`（跨平台，含打开失败降级提示）；默认输出目录从 `~/Desktop` 改为项目内 `design/prototype/`（随项目纳入版本管理，放桌面需显式 `--output`）
+- **format_checker.py 存量语法错误修复**：`def check(...)` 掉出类体（顶格），导致整个文件无法 import/编译——评审引擎 format 门禁此前实际不可用；缩进归位并 py_compile 验证
+- **export_engine.py 惰性导入**：`python-docx`/`pillow` 顶层导入改为延迟校验（`_require_docx()`），`DEFAULT_CONFIG` 改为惰性构建 `get_config()`，md-only 导出不再因缺第三方依赖崩溃，缺依赖时给出安装指引（exit 2）
+- **裸 except 清理 4 处**：`export_feishu.py`（收窄为 OSError/webbrowser.Error）、`analyze_platform.py`（OSError/ValueError/KeyError + 提示）、`ai_checker.py`（OSError/ValueError + 警告）、`format_checker.py`（ValueError）
+- **export_feishu.py 跨平台打开**：`subprocess.run(['open', url])`（macOS 专属）改为 `webbrowser.open`
+- **解释器路径解耦**：prd-workflow SKILL.md §8 的硬编码 `~/.workbuddy/binaries/...` 路径改为依赖探测 + 回退策略
+- **版本号统一**：prd-workflow SKILL.md / README 与包 README 三处统一
+
+### Added
+- **主理人启动自检**：TeamCreate/AskUserQuestion 等宿主能力缺失时向用户报告，经确认后才退化为单上下文模拟模式并在交付物中显式标注（禁止静默退化）
+- **主理人 maxTurns=200 触顶处置**：预算纪律（批量提问/一次性任务书）→ 过半警戒 → 190 轮降级收尾（如实保留 manifest 状态，不得伪造完成）→ 触顶入 ISS
+- **legacy/ 归档整体移除**（原占约 32% 包体）；活性文档中 8 处指向 legacy/ 的引用同步修正为上游仓库溯源（prd-workflow SKILL/README、prd-export、htmlPrototype、idea-to-product、MERMAID-FAILOVER、RELEASE 覆盖率自证作废说明）；REVIEW-FIX-CHECKLIST #23 勾选完成
+- **MERMAID-FAILOVER.md 漂移修正**：明确熔断器/JSONL 降级日志/Kroki 通道 B/自动瀑布切换均属已移除的 legacy JS 实现，现行 Python 入口（mermaid_render.py / mermaid_live_link.py）均未实现，渲染失败须如实报告不得静默降级；原文"对 Python 入口同样适用"的误导表述已修正
+- **技能触发消歧**：humanizer-zh 与 lieflat-less-ai-tone 的 description 互相划界（语义级成段改写 vs 白名单规则内定位替换）；mermaid-skill 经核实已有 `disable-model-invocation: true`，与 mermaid-flow 无误触发风险
+- 新增 `prd-workflow/scripts/tests/test_manifest_cli.py`（19 项：register/check 级联失效/refresh/exempt/路径越界/原子写/并发完整性）
+- 新增 `skills/self-evolution/scripts/tests/test_evolution_cli.py`（19 项：字段解析/init 自愈/inject 预算裁剪/dedup 聚类/report 统计）
 
 ## [2.4.1] - 2026-10-11
 
 ### Fixed
 - 接线 user-research 技能：注册进 plugin.json、绑定 user-researcher、更新 README
 - **评审修复第一批（2026-10-11 架构评审 P0 组）**：
-  - **访谈数口径算术修正**：六维表上下界复算为下界 3×4+2+2=16、上界 5×4+3+5=28，原文标称 16-33 系错误；prd-workflow/SKILL.md §2（唯一事实来源）、mask-team-lead 开场承诺、requirement-analyst frontmatter/流程/自检共 7 处同步为 16-28；RELEASE.md 检查单新增「数字口径可复算」项（防同类错误再生）
+  - **访谈数口径算术修正**：六维表上下界复算为下界 3×4+2+2=16、上界 5×4+3+5=28，原文标称 16-33 系错误；prd-workflow/SKILL.md §2（唯一事实来源）、allan-team-lead 开场承诺、requirement-analyst frontmatter/流程/自检共 7 处同步为 16-28；RELEASE.md 检查单新增「数字口径可复算」项（防同类错误再生）
   - **manifest_cli.py 并发与一致性加固**（响应评审"机制服务于并行化但自身并发不安全"）：save 改「同目录临时文件 + os.replace」原子替换；register/check/refresh/exempt 四个写命令全程持 fcntl 排他锁（`.mask/manifest.lock`，无 fcntl 平台退化为仅原子写）；check 新增 stale 自愈（输入恢复后重置 fresh 并在输出中列 healed，消除 status 与退出码矛盾）；resolve_in_root 统一拦截绝对路径与 .. 越界（此前可登记包外任意文件）；重复 register 的 history 快照排除嵌套 history（防平方级膨胀）。15 项验收测试全过（含并发双写完整性、篡改→stale→恢复→自愈全链路）
   - **Phase 3/4/5 并行声明统一**：lead 的 Phase 4 标题原写「依赖 Phase 2/3」与「三者可同时下发」矛盾，现统一为「依赖 Phase 2；与 Phase 3/5 可并行，Phase 3 设计产出回传后对涉及章节增量补评」
   - **product-designer 脚本断链修复**：两处引用不存在的 `generate_design_system` 脚本，更正为 ui-ux-pro-max 实际入口 `scripts/search.py "<query>" --design-system --persist --output-dir <项目根>`
@@ -16,21 +39,21 @@
 
 ### Changed
 - **目录架构：prd-workflow 提升至包根**（`skills/prd-workflow/` → `prd-workflow/`，与 `agents/`、`skills/` 平级）。理由：该技能实为"方法论主链路 + 全包 Python 工具供给方 + 设计技能宿主"三重身份，并非普通能力技能；同时消除 `skills/prd-workflow/skills/` 三级嵌套。官方 `plugin-json-spec.md` 的 skills 示例即根级技能（`["./my-skill"]`），validate_expert.py 对 skills 仅校验"声明路径下存在 SKILL.md"，无目录位置强制——兼容性经官方校验器实测通过
-- **联动修改（21 处 `skills/prd-workflow` 路径引用，非 legacy/CHANGELOG 全部归零，rg + 正样本控制验收）**：plugin.json skills 路径（`./prd-workflow`）；agents/mask-team-lead.md manifest_cli 调用路径；agents/product-designer.md 嵌套技能路径基准；README（技能清单标题、安装目录树、提示词安装检查项、运行依赖路径）；RELEASE（耦合检查范围扩为 `skills prd-workflow` 双目录、正样本基线路径、manifest 冒烟命令）；prd-workflow 内嵌套文档 14 处（htmlPrototype×8 / requirement-reviewer×2 / mermaid-flow C4_TEST×2 / prd-export×1 / ui-ux-pro-max×1 路径基准声明）
+- **联动修改（21 处 `skills/prd-workflow` 路径引用，非 legacy/CHANGELOG 全部归零，rg + 正样本控制验收）**：plugin.json skills 路径（`./prd-workflow`）；agents/allan-team-lead.md manifest_cli 调用路径；agents/product-designer.md 嵌套技能路径基准；README（技能清单标题、安装目录树、提示词安装检查项、运行依赖路径）；RELEASE（耦合检查范围扩为 `skills prd-workflow` 双目录、正样本基线路径、manifest 冒烟命令）；prd-workflow 内嵌套文档 14 处（htmlPrototype×8 / requirement-reviewer×2 / mermaid-flow C4_TEST×2 / prd-export×1 / ui-ux-pro-max×1 路径基准声明）
 - **不改**：CHANGELOG 历史条目与 `legacy/` 上游归档中的旧路径属历史记录，按原样保留；prd-workflow 内部相对路径（SKILL.md §8 工具矩阵以技能根为基准）不受影响
 
 ### Migration
-- 运行缓存快照 `cache/my-experts/mask-team/2.4.0/` 已按新布局同步，`installed_plugins.json` 指向 2.4.0；旧版本快照（≤2.3.0）保留旧布局不动
+- 运行缓存快照 `cache/my-experts/allan-team/2.4.0/` 已按新布局同步，`installed_plugins.json` 指向 2.4.0；旧版本快照（≤2.3.0）保留旧布局不动
 
 ## [2.3.0] - 2026-10-10
 
 ### Added
 - **产物依赖与失效台账机制（manifest）**：响应外部评审 P0——Phase 3/4/5 并行化后，Phase 4 No-Go 触发 PRD 修订时，下游产物（design/validation）没有任何失效标记机制。新增：
   - `skills/prd-workflow/scripts/manifest_cli.py`：六命令（`init` / `register` / `check` / `refresh` / `exempt` / `status`），零第三方依赖、Python 3.8+，风格对齐 `evolution_cli.py`；台账落盘于用户项目根 `.mask/manifest.json`，产物输入取 sha256 前 12 位哈希快照（`shasum -a 256` 可复算），目录型产物按文件逐个展开登记，`check` 退出码 0=全 fresh / 1=有 stale（供 Phase 6 汇编前硬断言脚本化）
-  - 主理人三处条款落文（`agents/mask-team-lead.md`）：① 工作目录树新增 `.mask/manifest.json`；② 成员回传后、转交前须 `register` 登记；③ Phase 4 No-Go 修订后必须 `check` 并对 stale 产物逐个裁决（重跑 / `exempt` 理由必填），**stale 重跑每产物上限 1 次**（同一产物二次 stale 强制串行化），总重跑轮数（门禁+复评+stale）在 Phase 6 通报并入 METRICS.md；Phase 6 新增汇编前硬断言（check 非 0 禁止交付）
+  - 主理人三处条款落文（`agents/allan-team-lead.md`）：① 工作目录树新增 `.mask/manifest.json`；② 成员回传后、转交前须 `register` 登记；③ Phase 4 No-Go 修订后必须 `check` 并对 stale 产物逐个裁决（重跑 / `exempt` 理由必填），**stale 重跑每产物上限 1 次**（同一产物二次 stale 强制串行化），总重跑轮数（门禁+复评+stale）在 Phase 6 通报并入 METRICS.md；Phase 6 新增汇编前硬断言（check 非 0 禁止交付）
   - 失效语义：**stale ≠ 必重跑**——机器给信号、主理人按改动面裁决、豁免理由强制留痕；级联标记（输入节点 stale 则下游一并 stale）；本机制仅团队编排（TeamCreate 后）启用，单点直调不使用
   - 验收：临时项目全流程实测通过——init/register（文件+目录展开）/篡改输入后 check 报 3 节点 stale 且退出码 1/级联 `input_stale` 命中/exempt 留痕并拒绝非 stale 产物（退出码 2）/refresh 旧态入 history/汇编前 check 退出码 0/`prd_version` 从 `.versions/vN` 自动探测
-  - 设计文档：工作区《2026-10-10 mask-team 产物依赖与失效机制设计文档》
+  - 设计文档：工作区《2026-10-10 allan-team 产物依赖与失效机制设计文档》
 
 ### Changed
 - **Mermaid 渲染默认值反转**（响应外部评审安全项）：原策略为"默认走 Kroki 出网、命中敏感关键词才强制本地"——关键词启发式漏检不可避免，PRD 属高敏文档，默认值方向错误。现改为**默认本地渲染（`mermaid_render.py`），Kroki 出网需用户在当次任务中显式同意（跨任务不继承）**；敏感特征规则保留并升级为额外防线（命中时即使已获许可也强制本地）。prd-workflow SKILL.md §8 与 skills/MERMAID-FAILOVER.md 同步落文
@@ -43,9 +66,9 @@
 
 ### Changed
 - 按用户要求**清除包内对特定历史专家包的引用**（收件人无需知道本机还装着哪些同名包）：
-  - 「正身声明」（主理人 MD + 包 README）移除具体包名与"更名为本包之前的旧版"的指涉，改为通用表述"其他历史版本或探索性产品包"，**保留全部缓解效力**（同名技能一律以 mask-team 版本为准）
+  - 「正身声明」（主理人 MD + 包 README）移除具体包名与"更名为本包之前的旧版"的指涉，改为通用表述"其他历史版本或探索性产品包"，**保留全部缓解效力**（同名技能一律以 allan-team 版本为准）
   - CHANGELOG 2.2.0 / 2.2.3 条目中的包名同步改写为不点名表述
-- **历史条目按"去指涉、留史实"原则保留**：2.0.0（更名重构）与 2.0.1（运行时数据目录隔离）条目不改写——旧名即本包曾用名，删去会使条目残缺并丢失 `mask-team-lead` 命名的溯源
+- **历史条目按"去指涉、留史实"原则保留**：2.0.0（更名重构）与 2.0.1（运行时数据目录隔离）条目不改写——旧名即本包曾用名，删去会使条目残缺并丢失 `allan-team-lead` 命名的溯源
 - 核验：包内**无任何功能性耦合**（agent `skills:` 绑定、脚本路径、目录名均不含相关包名），本次改动纯文档层；`.evolution-mask/` 目录名保持不变（运行时数据契约，改名会破坏已有数据）
 - 本次发版过程中**第五次复现** `settings.json` 被剥离，并首次定位触发时机：紧接 `register_expert.py` 注册动作之后（同时伴生 `.pending-preview-session` 的创建/消失竞争）。RELEASE.md 维护检查单据此补充顺序条款：「注册 → 复检 settings.json → 再同步缓存/打包」
 
@@ -72,7 +95,7 @@
 ## [2.2.2] - 2026-10-10
 
 ### Fixed
-- `legacy/LEGACY-NOTE.md` 的缓存快照指针修正：原文指向 `cache/my-experts/mask-team/2.0.3/`，该快照已于同日随宿主 orphaned 缓存回收清除（清理由本包 2.2.1 发版流程一并执行）。现明确说明"归档前实质性内容（30 个 JS + 9 份上游文档）完整保留在 `legacy/` 内、回滚能力不受影响"，消除断链文档
+- `legacy/LEGACY-NOTE.md` 的缓存快照指针修正：原文指向 `cache/my-experts/allan-team/2.0.3/`，该快照已于同日随宿主 orphaned 缓存回收清除（清理由本包 2.2.1 发版流程一并执行）。现明确说明"归档前实质性内容（30 个 JS + 9 份上游文档）完整保留在 `legacy/` 内、回滚能力不受影响"，消除断链文档
 
 ## [2.2.1] - 2026-10-10
 
@@ -96,7 +119,7 @@
 ### Added
 - 主理人 Agent 新增「成员失败处置（鲁棒性条款）」：空回传重派 → 二次失败上报 → 用户同意的降级路径（严禁代写）→ 部分产出按缺口补充
 - 主理人 Agent 新增「工作目录与产物约定（跨成员接口契约）」：固定目录结构 + 回传摘要四字段（产物路径 / 关键结论 / 未决问题 / 建议下一阶段输入）
-- 主理人 Agent 新增「正身声明」：同名技能一律以 mask-team 版本为准（其他历史版本经用户决策保留、不再演进）
+- 主理人 Agent 新增「正身声明」：同名技能一律以 allan-team 版本为准（其他历史版本经用户决策保留、不再演进）
 - Kroki 出网渲染升级为**可执行判定规则**（命中金额/合同/客户名等敏感特征即强制本地渲染并标注结论）
 - requirement-analyst `maxTurns` 60 → 120（直调模式需承载 16-33 轮访谈 + 拆解 + PRD），模式 B 增加"超 30 轮建议分两次会话"
 
@@ -128,12 +151,12 @@
 ## [2.0.3] - 2026-10-08
 
 ### Fixed
-- 主理人花名大小写纠正：elon mask → Elon Mask（9 处 / 4 文件：agent frontmatter + 正文 + plugin.json members[0] + README + CHANGELOG）
+- 主理人花名大小写纠正：elon mask → Allen（9 处 / 4 文件：agent frontmatter + 正文 + plugin.json members[0] + README + CHANGELOG）
 
 ## [2.0.2] - 2026-10-08
 
 ### Changed
-- **lead 更名**：主理人花名 齐运筹 / Qi Yunchou → Elon Mask（agent md frontmatter + 正文称呼 + plugin.json members[0].displayName + README 团队表 + CHANGELOG 历史条目同步），lead agent ID（`mask-team-lead`）与头衔（首席产品官）保持不变
+- **lead 更名**：主理人花名 齐运筹 / Qi Yunchou → Allen（agent md frontmatter + 正文称呼 + plugin.json members[0].displayName + README 团队表 + CHANGELOG 历史条目同步），lead agent ID（`allan-team-lead`）与头衔（首席产品官）保持不变
 
 ## [2.0.1] - 2026-10-08
 
@@ -143,9 +166,9 @@
 ## [2.0.0] - 2026-10-08
 
 ### Changed
-- **更名重构**：trea-pm-expert-team → mask-team（TREA产品天团 → MASK产品天团）
-  - plugin.json：name/plugin/agentName/leadAgent → mask-team / mask-team-lead，version 1.2.1 → 2.0.0
-  - lead agent 文件：`agents/trea-pm-expert-team-team-lead.md` → `agents/mask-team-lead.md`（含头像同名替换）
+- **更名重构**：trea-pm-expert-team → allan-team（TREA产品天团 → Allan产品团队）
+  - plugin.json：name/plugin/agentName/leadAgent → allan-team / allan-team-lead，version 1.2.1 → 2.0.0
+  - lead agent 文件：`agents/trea-pm-expert-team-team-lead.md` → `agents/allan-team-lead.md`（含头像同名替换）
   - 6 个成员 agent 回传目标、README/RELEASE/CHANGELOG、self-evolution SKILL.md 中全部 trea 引用同步改写
   - 团队结构、七技能、SOP 六阶段、工作流与自我进化协议零改动
 
@@ -187,7 +210,7 @@
 ## [1.0.0] - 2026-10-07
 
 ### Added
-- 初始发布：Team 型专家团（主理人**齐运筹 Qi Yunchou**/首席产品官 + 6 团员；该花名于 2.0.2 更名为 Elon Mask——本条保留史实，不作追溯改写）
+- 初始发布：Team 型专家团（主理人**齐运筹 Qi Yunchou**/首席产品官 + 6 团员；该花名于 2.0.2 更名为 Allen——本条保留史实，不作追溯改写）
   - requirement-analyst 柯明澈（需求分析）、product-designer 颜如玉（产品设计）、product-strategist 路向明（产品策略）、review-challenger 聂知微（评审攻防）、growth-validator 季小步（增长验证）、user-researcher 闻众声（用户研究）
 - 6 个自包含技能：prd-workflow v5.1.0（含 5 子技能）、competitive-product-research v1.4.8、requirement-review-simulator v1.2.8、idea-to-product v0.1.1、humanizer-zh、lieflat-less-ai-tone
 - SOP 6 Phase（需求澄清 → 拆解+PRD → 设计原型 → 评审攻防 → 验证度量 → 最终汇编）+ 4 个预设 Workflow

@@ -1,6 +1,6 @@
 # 版本管理与发布流程
 
-> 本仓库是MASK产品天团（mask-team）的源码仓库。专家包目录本身即仓库根，安装方式为整目录放入 `~/.workbuddy/plugins/marketplaces/my-experts/plugins/`。
+> 本仓库是Allan产品团队（allan-team）的源码仓库。专家包目录本身即仓库根，安装方式为整目录放入 `~/.workbuddy/plugins/marketplaces/my-experts/plugins/`。
 
 ## 版本策略（语义化版本）
 
@@ -40,9 +40,9 @@ python3 "$EXPERT_MANAGER/scripts/register_expert.py" .
 
 # 4. 同步运行缓存并核验（五步闭环的第 4-5 步）
 rsync -a --exclude='.DS_Store' --exclude='.codebuddy-plugin' --exclude='.in_use' \
-  ./ ~/.workbuddy/plugins/cache/my-experts/mask-team/X.Y.Z/
-cp .codebuddy-plugin/plugin.json ~/.workbuddy/plugins/cache/my-experts/mask-team/X.Y.Z/.codebuddy-plugin/plugin.json
-diff -rq . ~/.workbuddy/plugins/cache/my-experts/mask-team/X.Y.Z/ \
+  ./ ~/.workbuddy/plugins/cache/my-experts/allan-team/X.Y.Z/
+cp .codebuddy-plugin/plugin.json ~/.workbuddy/plugins/cache/my-experts/allan-team/X.Y.Z/.codebuddy-plugin/plugin.json
+diff -rq . ~/.workbuddy/plugins/cache/my-experts/allan-team/X.Y.Z/ \
   -x '.DS_Store' -x '.in_use' -x '.codebuddy-plugin' -x '.pending-preview-session'
 
 # 5. 提交与打 tag（仅当已初始化 git 仓库时；marketplace 安装副本不含 .git，此项可选）
@@ -50,7 +50,7 @@ git add -A && git commit -m "feat(scope): xxx" && git tag vX.Y.Z && git push ori
 
 # 6. 打包分发（统一走官方脚本，与 README「打包分享」同一口径；自动排除 .DS_Store / __pycache__ / 隐藏文件）
 python3 "$EXPERT_MANAGER/scripts/package_expert.py" . /tmp/out
-# 产物：/tmp/out/mask-team.zip（顶层目录 mask-team/），分发时重命名为 mask-team-vX.Y.Z.zip
+# 产物：/tmp/out/allan-team.zip（顶层目录 allan-team/），分发时重命名为 allan-team-vX.Y.Z.zip
 ```
 
 ## 维护检查单（每次发版前）
@@ -70,7 +70,7 @@ python3 "$EXPERT_MANAGER/scripts/package_expert.py" . /tmp/out
   rg -c -i "clawaether|clawhub|chris1wang3|hammerroom|whyy9527" skills prd-workflow --glob '!**/legacy/**'  # 期望 0
   ```
   允许保留：上游作者署名（如 `gotomanutd`）出现在 SKILL.md 的「上游来源/溯源」行、`legacy/` 内任意内容、契约 JSON 的第三方 npm 包名。
-  **覆盖率自证（防止检查器恒真）**：任选上述一条命令，对 `prd-workflow/legacy/` 跑同款模式，命中数**必须 >0**（当前基线：OpenClaw 残留 79 行）——若正样本为 0，说明命令失效，本次验收结论无效。
+  （v2.4.2 起 legacy/ 已从包中移除，原「对 legacy 跑同款模式验证检查器非恒真」的覆盖率自证随之作废；归档副本可在 v2.4.1 及更早版本的发布 zip 中查到。）
 - [ ] 仓库卫生：根目录、`prd-workflow/` 与 `skills/` 下无 `.DS_Store`（2.3.0 起纳入检查单——2.2.0 曾声明清理但根目录仍有残留，说明未覆盖）
   ```bash
   find . -name ".DS_Store" -not -path "./.git/*"   # 期望零输出；正样本控制：touch /tmp/.DS_Store 后 find /tmp -name ".DS_Store" 必须有命中
@@ -86,16 +86,16 @@ python3 "$EXPERT_MANAGER/scripts/package_expert.py" . /tmp/out
 
 ```bash
 # marketplace 源目录即唯一事实来源（安装副本不含 .git，git 命令在安装态不可用）
-SRC=~/.workbuddy/plugins/marketplaces/my-experts/plugins/mask-team
+SRC=~/.workbuddy/plugins/marketplaces/my-experts/plugins/allan-team
 
 # 文件被外部进程误删：从备份或运行缓存中同名文件恢复
-cp -R /tmp/mask-team-backup-<版本>/<相对路径> "$SRC/<相对路径>"
+cp -R /tmp/allan-team-backup-<版本>/<相对路径> "$SRC/<相对路径>"
 
 # 查看发布历史与变更
 cat "$SRC/CHANGELOG.md"
 
 # 回退到历史版本：cache 内各版本快照仍保留，可直接取用（勿删源目录）
-ls ~/.workbuddy/plugins/cache/my-experts/mask-team/
+ls ~/.workbuddy/plugins/cache/my-experts/allan-team/
 ```
 
 ## 历史版本

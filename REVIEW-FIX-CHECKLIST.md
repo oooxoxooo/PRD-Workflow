@@ -1,4 +1,4 @@
-# mask-team v2.4.x 评审修复清单
+# allan-team v2.4.x 评审修复清单
 
 > 来源：2026-10-11 架构评审。每条含证据位置与修复动作，完成后打勾。
 > 严重度：P0 = 发布阻断｜P1 = 高｜P2 = 中｜P3 = 低
@@ -20,7 +20,7 @@
 ## P1 — 高
 
 ### 2. 统一上下文中转规则（原文 vs 摘要矛盾）✅ 已修复
-- **证据**：`agents/mask-team-lead.md:142, 213, 219`
+- **证据**：`agents/allan-team-lead.md:142, 213, 219`
 - **修复**：
   - [x] WF-1 依赖（L142）与协作规则 2（L213）的"完整产出原文"已改为"回传摘要（四字段）+ 产物路径，登记 manifest，下一阶段按需自行读取原文"
   - [x] 规则 8 已补例外："主理人自身需直接消费的产出（访谈提纲、评审裁决清单）回传全文"
@@ -28,13 +28,13 @@
 
 ### 3. 工具宿主语义混用
 - **现状**：TeamCreate / Agent 工具 `subagent_type` / SendMessage 三套术语分属不同宿主，无"哪个宿主哪套可用"声明；缺 TeamCreate 的宿主会静默退化为单上下文模拟多角色，恰为严禁行为第 1 条禁止。
-- **证据**：`agents/mask-team-lead.md:82, 88, 216`
+- **证据**：`agents/allan-team-lead.md:82, 88, 216`
 - **修复**：
   - [ ] 铁律前加宿主能力自检段："若当前宿主无 TeamCreate/SendMessage，向用户显式声明降级为顺序直调模式，不模拟多角色发言"
 
 ### 4. 主理人轮次预算保护
 - **现状**：maxTurns=200，16-33 题逐题访谈 + 6 Phase 调度 + 复评回环，完整 WF-1 触顶风险真实，触顶处置未定义（成员侧却有 30 轮保护）。
-- **证据**：`agents/mask-team-lead.md:50`；对比 `agents/requirement-analyst.md:35`
+- **证据**：`agents/allan-team-lead.md:50`；对比 `agents/requirement-analyst.md:35`
 - **修复**：
   - [ ] 主理人文件加条款："接近轮次上限时在 Phase 边界落盘全部中间产物，建议用户新会话续跑，manifest 台账保证可恢复"
 
@@ -77,7 +77,7 @@
 ## P2 — 中
 
 ### 10. 成员侧缺 maxTurns 触顶自救协议
-- **证据**：`agents/mask-team-lead.md:100, 102`；6 个成员文件（除 requirement-analyst 模式 B）
+- **证据**：`agents/allan-team-lead.md:100, 102`；6 个成员文件（除 requirement-analyst 模式 B）
 - **修复**：
   - [ ] 6 个成员文件统一加："预估剩余轮次不足时，先落盘已完成部分并按四字段回传，标注缺口清单"
 
@@ -114,7 +114,7 @@
   - [ ] 修 SKILL.md 文件结构图
 
 ### 16. 版本号体系混乱
-- **证据**：prd-workflow 三处三值（`SKILL.md:6` v2.4.0 / `prd-workflow/README.md:1` v2.1.0 / `mask-team/README.md:40` v2.2.0）；技能版本声明位置不一（frontmatter / 仅 CHANGELOG / 无）
+- **证据**：prd-workflow 三处三值（`SKILL.md:6` v2.4.0 / `prd-workflow/README.md:1` v2.1.0 / `allan-team/README.md:40` v2.2.0）；技能版本声明位置不一（frontmatter / 仅 CHANGELOG / 无）
 - **修复**：
   - [ ] 版本号只留 SKILL.md §10 一处事实来源，README 改引用不抄写
   - [ ] 各技能版本统一进 frontmatter
@@ -133,12 +133,12 @@
 
 ## P3 — 低
 
-- [ ] **18. Phase 4∥5 并行成本提示**：`mask-team-lead.md:72` 补"并行期若 Phase 4 判 No Go，Phase 5 产物判 stale 重跑（限 1 次）；验证范围敏感的对象建议先串行评审"
+- [ ] **18. Phase 4∥5 并行成本提示**：`allan-team-lead.md:72` 补"并行期若 Phase 4 判 No Go，Phase 5 产物判 stale 重跑（限 1 次）；验证范围敏感的对象建议先串行评审"
 - [ ] **19. 职责重叠闭环**：user-researcher 核心能力 5 补"仅提供维度素材，完整提纲归 requirement-analyst"（`agents/user-researcher.md:23`）；lead 明确"RICE 排序为建议输入，PRD 功能优先级以 requirement-analyst + 用户确认为准"（`agents/product-strategist.md:23`）
-- [ ] **20. 正身声明降级**：`mask-team-lead.md:18` / README L5 改"建议卸载历史版本"的提示性表述（宿主解析层无机制保障）
-- [ ] **21. 更换 "Elon Mask" 花名**：消除名人影射的合规风险（plugin.json `members[0]` + avatars 引用同步改）
+- [ ] **20. 正身声明降级**：`allan-team-lead.md:18` / README L5 改"建议卸载历史版本"的提示性表述（宿主解析层无机制保障）
+- [ ] **21. 更换 "Allen" 花名**：消除名人影射的合规风险（plugin.json `members[0]` + avatars 引用同步改）
 - [ ] **22. 嵌套技能发现策略**：宿主不递归 → 强化主 SKILL.md §9 触发表；宿主递归 → 统一 taste-skill 目录名与 frontmatter name、消除 mermaid-flow / mermaid-skill 描述重叠
-- [ ] **23. legacy/ 瘦身**：加 `.skillignore`（若宿主支持）或压成 tarball，收回约 32% 包体（约 1.4 万行）
+- [x] **23. legacy/ 瘦身**（✅ 2026-10-13 v2.4.2：legacy/ 归档已整体从包中移除，活性文档死链同步修正）
 - [ ] **24. humanizer-zh 坏示例**：修 L318/L321（改写前后逐字节相同）与 L289-293；485 行拆为"索引 + references 示例库"
 - [ ] **25. 上下文分层推广**：humanizer-zh / lieflat 改造为 user-research 式"按需读 playbook"结构（当前两者同时触发仅 SKILL.md 即 940 行）
 - [ ] **26. evolution_cli.py 写入子命令**：加 `bump-hit` / `set-level` / `add-pref`，减少 LLM 手工编辑 Markdown 导致的字段静默漂移
@@ -150,7 +150,7 @@
 
 ## 执行记录
 
-- **2026-10-11 第一批（#1、#2、#5、#6、#7、#17）**：全部完成，版本升至 2.4.1。验证：preflight.sh 全绿（8 个技能 SKILL.md 齐备）；test_batch_smoke.py 3 用例通过；`--batch` 真实渲染成功；plugin.json 合法。改动文件：plugin.json / CHANGELOG / README / RELEASE / mask-team-lead.md / user-researcher.md / prd-workflow SKILL.md / mermaid_render.py / ai_checker.py / review-simulator SKILL.md + 引擎文档 / 新增 preflight.sh + test_batch_smoke.py / user-research 12 文件已 git add（未 commit）。
+- **2026-10-11 第一批（#1、#2、#5、#6、#7、#17）**：全部完成，版本升至 2.4.1。验证：preflight.sh 全绿（8 个技能 SKILL.md 齐备）；test_batch_smoke.py 3 用例通过；`--batch` 真实渲染成功；plugin.json 合法。改动文件：plugin.json / CHANGELOG / README / RELEASE / allan-team-lead.md / user-researcher.md / prd-workflow SKILL.md / mermaid_render.py / ai_checker.py / review-simulator SKILL.md + 引擎文档 / 新增 preflight.sh + test_batch_smoke.py / user-research 12 文件已 git add（未 commit）。
 
 ## 剩余批次建议
 

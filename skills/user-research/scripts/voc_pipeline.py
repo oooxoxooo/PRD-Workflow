@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 voc_pipeline.py —— VoC 反馈材料确定性预处理脚本
-（mask-team / skills/user-research，增强 B 的落地实现）
+（allan-team / skills/user-research，增强 B 的落地实现）
 
 定位：本脚本只做**确定性预处理，语义洞察归 LLM**。
     脚本负责：清洗、去重、脱敏（隐私红线的技术兜底，不可逆）、

@@ -4,7 +4,7 @@ HTML Prototype Generator - Main Entry Point
 
 Usage:
     python3 main.py "创建一个产品列表页"
-    python3 main.py --page list --output ~/Desktop/prototype
+    python3 main.py --page list --output design/prototype/prototype_list
     python3 main.py "产品原型" --design-tokens design.json
 """
 
@@ -12,6 +12,7 @@ import sys
 import os
 import argparse
 import json
+import webbrowser
 from pathlib import Path
 from datetime import datetime
 
@@ -336,8 +337,9 @@ def get_output_path(page_type: str, custom_output: str = None) -> tuple:
         output_dir = Path(custom_output).parent
         base_name = Path(custom_output).stem
     else:
-        # 默认输出到桌面
-        output_dir = Path.home() / "Desktop"
+        # 默认输出到当前工作目录的 design/prototype/（随项目纳入版本管理；
+        # 如需放桌面请显式传 --output ~/Desktop/xxx）
+        output_dir = Path.cwd() / "design" / "prototype"
         base_name = f"prototype_{page_type}"
     
     html_path = output_dir / f"{base_name}.html"
@@ -465,7 +467,11 @@ def main():
     # 自动打开
     if args.open:
         print(f"\n🌐 打开 HTML...")
-        os.system(f"open {html_path}")
+        try:
+            webbrowser.open(html_path.resolve().as_uri())
+        except Exception as e:
+            print(f"⚠️ 自动打开失败：{e}")
+            print(f"💡 请手动打开：{html_path}")
     
     # 完成总结
     print("\n" + "=" * 60)

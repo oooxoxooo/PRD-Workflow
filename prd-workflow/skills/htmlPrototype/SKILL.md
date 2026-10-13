@@ -281,7 +281,7 @@ open ~/Desktop/prototype_list.html
 ## 💬 社区
 
 遇到问题？提交 Issue 或参与讨论：
-- 上游来源：见 `prd-workflow/legacy/LEGACY-NOTE.md`
+- 上游来源：上游开源技能包（MIT-0），溯源见上游仓库
 - Discord: https://discord.gg/clawd
 
 ---

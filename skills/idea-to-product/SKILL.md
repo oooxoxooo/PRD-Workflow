@@ -61,4 +61,4 @@ Use this skill when you want to:
 
 ## Links
 
-- 上游来源：本技能源自上游开源技能包（MIT-0）；溯源细节见 `prd-workflow/legacy/LEGACY-NOTE.md`
+- 上游来源：本技能源自上游开源技能包（MIT-0）；溯源细节见上游开源技能包仓库

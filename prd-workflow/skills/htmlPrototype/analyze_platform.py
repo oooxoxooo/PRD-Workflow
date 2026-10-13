@@ -439,7 +439,8 @@ class PlatformAnalyzer:
             doc.add_heading(shot['name'].replace('_', ' ').title(), level=3)
             try:
                 doc.add_picture(str(shot['path']), width=Inches(6.5))
-            except:
+            except (OSError, ValueError, KeyError) as e:
+                print(f'⚠️ 截图插入失败（{e}），以占位文字替代')
                 doc.add_paragraph(f'[截图：{shot["path"]}]')
         
         # 总体评价

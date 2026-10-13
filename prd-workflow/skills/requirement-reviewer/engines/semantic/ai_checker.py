@@ -133,8 +133,8 @@ class AIContentChecker:
                 with open(config_path, "r") as f:
                     file_config = json.load(f)
                     config.update(file_config)
-            except:
-                pass
+            except (OSError, ValueError) as e:
+                print("⚠️ config.json 读取/解析失败，使用默认配置：%s" % e)
 
         return config
 
